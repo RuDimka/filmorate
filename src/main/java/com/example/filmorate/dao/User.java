@@ -1,14 +1,16 @@
 package com.example.filmorate.dao;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import org.springframework.stereotype.Repository;
 
-@Getter
-@Setter
+import java.time.LocalDate;
+
+@Data
+@Repository
 public class User {
     private Long id;
-    private String email;
     private String login;
     private String name;
-    private String birthday;
+    private String email;
+    private LocalDate birthday;
 }

@@ -30,7 +30,7 @@ public class FilmController {
 
     @GetMapping
     public List<FilmDto> getAllFilms(FilmDto filmDto) {
-        log.info("Получен запрос на вывод списка фильмов");
+        log.info("Получен запрос на список фильмов");
         return filmService.getAllFilms(filmDto);
     }
 }

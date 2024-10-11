@@ -26,9 +26,6 @@ public class FilmStorageDao {
         return new ArrayList<>(filmMap.values());
     }
 
-//    public Film getFilmById(Long id) {
-//        return filmMap.get(id);
-//    }
     public Optional<Film> getFilmById(Long id) {
         return Optional.ofNullable(filmMap.get(id));
     }
