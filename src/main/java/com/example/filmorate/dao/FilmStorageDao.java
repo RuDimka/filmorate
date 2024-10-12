@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public class FilmStorageDao {
     private final Map<Long, Film> filmMap = new HashMap<>();
     private final AtomicLong filmIdGenerator = new AtomicLong(1);
-    public static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1892, 12,28);
 
     public Film saveFilm(Film film) {
         film.setId(filmIdGenerator.getAndIncrement());

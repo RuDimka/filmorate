@@ -6,6 +6,7 @@ import com.example.filmorate.dto.FilmDto;
 import com.example.filmorate.exceptions.FilmNotFoundException;
 import com.example.filmorate.mapper.FilmMapper;
 import com.example.filmorate.service.FilmService;
+import com.example.filmorate.validate.ValidateFilm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.example.filmorate.dao.FilmStorageDao.MIN_RELEASE_DATE;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,11 +22,12 @@ public class FilmServiceImpl implements FilmService {
     private final Film film;
     public final FilmStorageDao filmStorageDao;
     private final FilmMapper filmMapper;
+    private final ValidateFilm validateFilm;
 
     @Override
     public FilmDto addNewFilm(FilmDto filmDto) {
         log.info("Добавлен фильм {}", filmDto.getName());
-        validateFilm(filmDto);
+        validateFilm.validateFilm(filmDto);
         Film newFilm = filmMapper.filmDtoToEntity(filmDto);
         Film savedFilm = filmStorageDao.saveFilm(newFilm);
         return filmMapper.filmToFIlmDto(savedFilm);
@@ -57,20 +57,5 @@ public class FilmServiceImpl implements FilmService {
         return listFilm.stream()
                 .map(filmMapper::filmToFIlmDto)
                 .collect(Collectors.toList());
-    }
-
-    public void validateFilm(FilmDto filmDto) {
-        if (filmDto.getName().isEmpty()) {
-            throw new RuntimeException("Не заполнено название фильма");
-        }
-        if (filmDto.getDescription().length() > 200) {
-            throw new RuntimeException("Введено не допустимое количество символов, максимальное 200");
-        }
-        if (filmDto.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
-            throw new RuntimeException("Недопустимая дата релиза фильма");
-        }
-        if (filmDto.getDuration() < 0) {
-            throw new RuntimeException("Не корректно указана продолжительность фильма");
-        }
     }
 }

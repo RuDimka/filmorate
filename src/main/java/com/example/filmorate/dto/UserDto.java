@@ -1,6 +1,7 @@
 package com.example.filmorate.dto;
 
 import lombok.Data;
+import lombok.NonNull;
 
 import java.time.LocalDate;
 

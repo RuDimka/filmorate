@@ -6,11 +6,11 @@ import com.example.filmorate.dto.UserDto;
 import com.example.filmorate.exceptions.UserNotFoundException;
 import com.example.filmorate.mapper.UserMapper;
 import com.example.filmorate.service.UserService;
+import com.example.filmorate.validate.ValidateUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,11 +23,12 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserStorageDao userStorageDao;
     private final User user;
+    private final ValidateUser validateUser;
 
     @Override
     public UserDto addUser(UserDto userDto) {
         log.info("Добавлен пользователь {}", userDto.getName());
-        validateUser(userDto);
+        validateUser.validateByUser(userDto);
         User newUser = userMapper.userDtoToUser(userDto);
         User savedUser = userStorageDao.saveUser(newUser);
         return userMapper.userToUserDto(savedUser);
@@ -57,21 +58,5 @@ public class UserServiceImpl implements UserService {
         return listUser.stream()
                 .map(userMapper::userToUserDto)
                 .collect(Collectors.toList());
-    }
-
-    public void validateUser(UserDto userDto) {
-        if (userDto.getEmail().isEmpty() || !userDto.getEmail().contains("@")) {
-            throw new RuntimeException("Не заполнен адрес электронной почты");
-        }
-//        if (userDto.getLogin() == null || !userDto.getLogin().contains(" ")) {
-//            throw new RuntimeException("Не указано или не коррентное имя");
-//        }
-        if (userDto.getName() == null) {
-            userDto.setName(userDto.getLogin());
-        }
-        LocalDate today = LocalDate.now();
-        if (userDto.getBirthday().isAfter(today)) {
-            throw new RuntimeException("Указана не корректная дата рождения");
-        }
     }
 }
