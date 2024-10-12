@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class ValidateFilmTest {
 
     private ValidateFilm validateFilm;
@@ -19,13 +17,13 @@ class ValidateFilmTest {
     }
 
     @Test
-    void validateFilm() {
+    void validateToFilms() {
         LocalDate date = LocalDate.of(1995, 12, 23);
         FilmDto filmDto = new FilmDto();
         filmDto.setName("Terminator");
         filmDto.setDescription("Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.");
         filmDto.setReleaseDate(date);
-        filmDto.setDuration(-35);
-        validateFilm.validateFilm(filmDto);
+        filmDto.setDuration(85);
+        validateFilm.validateToFilms(filmDto);
     }
 }

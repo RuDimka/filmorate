@@ -24,7 +24,7 @@ public class UserStorageDao {
         return userMap.put(user.getId(), user);
     }
 
-    public List<User> getAllUsers(User user){
+    public List<User> getAllUsers(){
         return new ArrayList<>(userMap.values());
     }
 }

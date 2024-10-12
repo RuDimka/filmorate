@@ -2,7 +2,6 @@ package com.example.filmorate.dao;
 
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -21,7 +20,7 @@ public class FilmStorageDao {
         return filmMap.put(film.getId(), film);
     }
 
-    public List<Film> getAllFilm(Film film) {
+    public List<Film> getAllFilm() {
         return new ArrayList<>(filmMap.values());
     }
 

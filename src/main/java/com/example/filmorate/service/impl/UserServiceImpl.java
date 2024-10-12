@@ -22,7 +22,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final UserStorageDao userStorageDao;
-    private final User user;
     private final ValidateUser validateUser;
 
     @Override
@@ -54,7 +53,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAllUsers(UserDto userDto) {
         log.info("Список пользователей");
-        List<User> listUser = userStorageDao.getAllUsers(user);
+        List<User> listUser = userStorageDao.getAllUsers();
         return listUser.stream()
                 .map(userMapper::userToUserDto)
                 .collect(Collectors.toList());

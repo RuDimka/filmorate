@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class FilmServiceImpl implements FilmService {
-    private final Film film;
     public final FilmStorageDao filmStorageDao;
     private final FilmMapper filmMapper;
     private final ValidateFilm validateFilm;
@@ -27,7 +26,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public FilmDto addNewFilm(FilmDto filmDto) {
         log.info("Добавлен фильм {}", filmDto.getName());
-        validateFilm.validateFilm(filmDto);
+        validateFilm.validateToFilms(filmDto);
         Film newFilm = filmMapper.filmDtoToEntity(filmDto);
         Film savedFilm = filmStorageDao.saveFilm(newFilm);
         return filmMapper.filmToFIlmDto(savedFilm);
@@ -53,7 +52,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public List<FilmDto> getAllFilms(FilmDto filmDto) {
         log.info("Список всех фильмов");
-        List<Film> listFilm = filmStorageDao.getAllFilm(film);
+        List<Film> listFilm = filmStorageDao.getAllFilm();
         return listFilm.stream()
                 .map(filmMapper::filmToFIlmDto)
                 .collect(Collectors.toList());
