@@ -10,7 +10,7 @@ public class UserStorageDao {
     private final Map<Long, User> userMap = new HashMap<>();
     private final AtomicLong userIdGenerator = new AtomicLong(1);
 
-    public User saveUser(User user){
+    public User saveUser(User user) {
         user.setId(userIdGenerator.getAndIncrement());
         userMap.put(user.getId(), user);
         return user;
@@ -24,7 +24,7 @@ public class UserStorageDao {
         return userMap.put(user.getId(), user);
     }
 
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return new ArrayList<>(userMap.values());
     }
 }

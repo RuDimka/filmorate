@@ -12,9 +12,7 @@ public class ValidateUser {
         if (userDto.getEmail().isEmpty() || !userDto.getEmail().contains("@")) {
             throw new RuntimeException("Не заполнен или не корректный адрес электронной почты");
         }
-//        if (userDto.getLogin() == null || !userDto.getLogin().contains(" ")) {
-//            throw new RuntimeException("Не указано или не коррентное имя");
-//        }
+
         if (userDto.getName() == null) {
             userDto.setName(userDto.getLogin());
         }
