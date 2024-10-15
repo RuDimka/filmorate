@@ -37,17 +37,16 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(UserDto userDto) {
         log.info("Обновлена информация по пользователю {}", userDto.getId());
         Optional<User> existingUsers = userStorageDao.findUserById(userDto.getId());
-        if (existingUsers.isPresent()) {
-            User existingUser = existingUsers.get();
-            existingUser.setName(userDto.getName());
-            existingUser.setEmail(userDto.getEmail());
-            existingUser.setLogin(userDto.getLogin());
-            existingUser.setBirthday(userDto.getBirthday());
-            User updateUser = userStorageDao.updateUser(existingUser);
-            return userMapper.userToUserDto(updateUser);
-        } else {
+        if (existingUsers.isEmpty()) {
             throw new UserNotFoundException("Пользователь с таким id " + userDto.getId() + " не найден");
         }
+        User existingUser = existingUsers.get();
+        existingUser.setName(userDto.getName());
+        existingUser.setEmail(userDto.getEmail());
+        existingUser.setLogin(userDto.getLogin());
+        existingUser.setBirthday(userDto.getBirthday());
+        User updateUser = userStorageDao.updateUser(existingUser);
+        return userMapper.userToUserDto(updateUser);
     }
 
     @Override
