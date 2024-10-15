@@ -2,7 +2,7 @@ package com.example.filmorate.service.impl;
 
 import com.example.filmorate.dao.User;
 import com.example.filmorate.dao.UserStorageDao;
-import com.example.filmorate.dto.UserDto;
+import com.example.filmorate.service.impl.dto.UserDto;
 import com.example.filmorate.exceptions.UserNotFoundException;
 import com.example.filmorate.mapper.UserMapper;
 import com.example.filmorate.service.UserService;

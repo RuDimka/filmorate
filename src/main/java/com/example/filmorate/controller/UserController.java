@@ -1,6 +1,6 @@
 package com.example.filmorate.controller;
 
-import com.example.filmorate.dto.UserDto;
+import com.example.filmorate.service.impl.dto.UserDto;
 import com.example.filmorate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

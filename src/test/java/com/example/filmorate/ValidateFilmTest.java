@@ -1,6 +1,6 @@
 package com.example.filmorate;
 
-import com.example.filmorate.dto.FilmDto;
+import com.example.filmorate.service.impl.dto.FilmDto;
 import com.example.filmorate.validate.ValidateFilm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

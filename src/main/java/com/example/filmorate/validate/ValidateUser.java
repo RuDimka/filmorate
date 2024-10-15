@@ -1,6 +1,6 @@
 package com.example.filmorate.validate;
 
-import com.example.filmorate.dto.UserDto;
+import com.example.filmorate.service.impl.dto.UserDto;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

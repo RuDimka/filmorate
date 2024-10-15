@@ -1,6 +1,6 @@
 package com.example.filmorate.service;
 
-import com.example.filmorate.dto.UserDto;
+import com.example.filmorate.service.impl.dto.UserDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

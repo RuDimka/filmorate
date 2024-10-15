@@ -1,6 +1,6 @@
 package com.example.filmorate;
 
-import com.example.filmorate.dto.UserDto;
+import com.example.filmorate.service.impl.dto.UserDto;
 import com.example.filmorate.validate.ValidateUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package com.example.filmorate.mapper;
 
 import com.example.filmorate.dao.User;
-import com.example.filmorate.dto.UserDto;
+import com.example.filmorate.service.impl.dto.UserDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

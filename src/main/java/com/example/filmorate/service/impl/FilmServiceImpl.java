@@ -2,7 +2,7 @@ package com.example.filmorate.service.impl;
 
 import com.example.filmorate.dao.Film;
 import com.example.filmorate.dao.FilmStorageDao;
-import com.example.filmorate.dto.FilmDto;
+import com.example.filmorate.service.impl.dto.FilmDto;
 import com.example.filmorate.exceptions.FilmNotFoundException;
 import com.example.filmorate.mapper.FilmMapper;
 import com.example.filmorate.service.FilmService;
