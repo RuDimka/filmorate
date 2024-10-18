@@ -29,4 +29,8 @@ public class InMemoryUserStorage implements UserStorage {
     public List<User> getAllUsers() {
         return new ArrayList<>(userMap.values());
     }
+
+    public void removeFriends(Long id) {
+        userMap.remove(id);
+    }
 }

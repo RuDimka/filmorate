@@ -1,6 +1,7 @@
 package com.example.filmorate.validate;
 
 import com.example.filmorate.dto.FilmDto;
+import com.example.filmorate.exceptions.ValidateException;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -12,16 +13,16 @@ public class ValidateFilm {
 
     public void validateToFilms(FilmDto filmDto) {
         if (filmDto.getName().isEmpty()) {
-            throw new RuntimeException("Не заполнено название фильма");
+            throw new ValidateException("Не заполнено название фильма");
         }
         if (filmDto.getDescription().length() > MAX_DESCRIPTION_LENGTH) {
-            throw new RuntimeException("Введено не допустимое количество символов, максимальное 200");
+            throw new ValidateException("Введено не допустимое количество символов, максимальное 200");
         }
         if (filmDto.getReleaseDate().isBefore(MIN_RELEASE_DATE)) {
-            throw new RuntimeException("Недопустимая дата релиза фильма");
+            throw new ValidateException("Недопустимая дата релиза фильма");
         }
         if (filmDto.getDuration() < 0) {
-            throw new RuntimeException("Не корректно указана продолжительность фильма");
+            throw new ValidateException("Не корректно указана продолжительность фильма");
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.filmorate.controller;
 
+import com.example.filmorate.dao.User;
 import com.example.filmorate.dto.UserDto;
 import com.example.filmorate.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,5 +34,28 @@ public class UserController {
     public List<UserDto> getAllUsers(UserDto userDto) {
         log.info("Получен запрос на список всех пользовтаелей");
         return userService.getAllUsers(userDto);
+    }
+
+    @PutMapping("{id}/friends/{friendId}")
+    public Optional<User> addFriends(@PathVariable Long id,
+                                     @PathVariable Long friendId) {
+        return userService.addFriends(id, friendId);
+    }
+
+    @DeleteMapping("{id}/friends/{friendId}")
+    public void removeFriends(@PathVariable Long id,
+                              @PathVariable Long friendId) {
+        userService.removeFriends(id, friendId);
+    }
+
+    @GetMapping("{id}/friends")
+    public List<Optional<User>> getFriends(@PathVariable Long id) {
+        return userService.getFriends(id);
+    }
+
+    @GetMapping("{id}/friends/common/{otherId}")
+    public List<UserDto> getCommonFriends(@PathVariable Long id,
+                                        @PathVariable Long otherId) {
+        return userService.getCommonFriends(id, otherId);
     }
 }

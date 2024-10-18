@@ -57,4 +57,19 @@ public class FilmServiceImpl implements FilmService {
                 .map(filmMapper::filmToFIlmDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void userLikeTheMovie(Long id, Long userId) {
+
+    }
+
+    @Override
+    public void removeLike(Long id, Long userId) {
+
+    }
+
+    @Override
+    public List<FilmDto> getTopFilms(Long count) {
+        return List.of();
+    }
 }

@@ -33,4 +33,21 @@ public class FilmController {
         log.info("Получен запрос на список фильмов");
         return filmService.getAllFilms(filmDto);
     }
+
+    @PutMapping("{id}/like/{userId}")
+    public void userLikeTheMovie(@PathVariable Long id,
+                                 @PathVariable Long userId) {
+        filmService.userLikeTheMovie(id, userId);
+    }
+
+    @DeleteMapping("{id}/like/{userId}")
+    public void removeLike(@PathVariable Long id,
+                           @PathVariable Long userId) {
+        filmService.removeLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public List<FilmDto> getTopFilms(@RequestParam Long count) {
+        return filmService.getTopFilms(count);
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.filmorate.validate;
 
 import com.example.filmorate.dto.UserDto;
+import com.example.filmorate.exceptions.ValidateException;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -10,7 +11,7 @@ public class ValidateUser {
 
     public void validateByUser(UserDto userDto) {
         if (userDto.getEmail().isEmpty() || !userDto.getEmail().contains("@")) {
-            throw new RuntimeException("Не заполнен или не корректный адрес электронной почты");
+            throw new ValidateException("Не заполнен или не корректный адрес электронной почты");
         }
 
         if (userDto.getName() == null) {
@@ -18,7 +19,7 @@ public class ValidateUser {
         }
         LocalDate today = LocalDate.now();
         if (userDto.getBirthday().isAfter(today)) {
-            throw new RuntimeException("Указана не корректная дата рождения");
+            throw new ValidateException("Указана не корректная дата рождения");
         }
     }
 }
