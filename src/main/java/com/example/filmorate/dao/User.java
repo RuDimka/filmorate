@@ -21,4 +21,8 @@ public class User {
     public void addFriend(Long friend) {
        friends.add(friend);
     }
+
+    public void removeFriends(Long friendId) {
+        friends.remove(friendId);
+    }
 }

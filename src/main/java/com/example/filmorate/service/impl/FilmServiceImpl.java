@@ -3,7 +3,10 @@ package com.example.filmorate.service.impl;
 import com.example.filmorate.dao.Film;
 import com.example.filmorate.dao.User;
 import com.example.filmorate.dto.FilmDto;
-import com.example.filmorate.exceptions.*;
+import com.example.filmorate.exceptions.FilmNotFoundException;
+import com.example.filmorate.exceptions.UserAlreadyLikedFilmException;
+import com.example.filmorate.exceptions.UserNotFoundException;
+import com.example.filmorate.exceptions.UserNotLikedFilmException;
 import com.example.filmorate.mapper.FilmMapper;
 import com.example.filmorate.service.FilmService;
 import com.example.filmorate.storage.InMemoryFilmStorage;
@@ -11,7 +14,6 @@ import com.example.filmorate.storage.InMemoryUserStorage;
 import com.example.filmorate.validate.ValidateFilm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -41,17 +43,15 @@ public class FilmServiceImpl implements FilmService {
     public FilmDto updateFilmById(FilmDto filmDto) {
         log.info("Отредактирована информация по фильму {}", filmDto.getName());
         Optional<Film> existingFilmOpt = inMemoryFilmStorage.getFilmById(filmDto.getId());
-        if (existingFilmOpt.isPresent()) {
-            Film existingFilm = existingFilmOpt.get();
-            existingFilm.setName(filmDto.getName());
-            existingFilm.setDescription(filmDto.getDescription());
-            existingFilm.setReleaseDate(filmDto.getReleaseDate());
-            existingFilm.setDuration(filmDto.getDuration());
-            Film updateFim = inMemoryFilmStorage.updateFilm(existingFilm);
-            return filmMapper.filmToFIlmDto(updateFim);
-        } else {
-            throw new FilmNotFoundException("Фильм с id " + filmDto.getId() + " не найден");
-        }
+        existingFilmOpt.orElseThrow(() -> new FilmNotFoundException("Фильм с id " + filmDto.getId() + " не найден"));
+
+        Film existingFilm = existingFilmOpt.get();
+        existingFilm.setName(filmDto.getName());
+        existingFilm.setDescription(filmDto.getDescription());
+        existingFilm.setReleaseDate(filmDto.getReleaseDate());
+        existingFilm.setDuration(filmDto.getDuration());
+        Film updateFim = inMemoryFilmStorage.updateFilm(existingFilm);
+        return filmMapper.filmToFIlmDto(updateFim);
     }
 
     @Override
@@ -66,43 +66,35 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void addLike(Long id, Long userId) {
         Optional<Film> filmOptional = inMemoryFilmStorage.getFilmById(id);
-        if (filmOptional.isEmpty()) {
-            throw new FilmNotFoundException("Фильм не найден");
-        }
+        Optional<User> userOptional = inMemoryUserStorage.findUserById(userId);
+        filmOptional.orElseThrow(() -> new FilmNotFoundException("Фильм не найден"));
+        userOptional.orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         Film filmLiked = filmOptional.get();
 
-        Optional<User> userOptional = inMemoryUserStorage.findUserById(userId);
-        if (userOptional.isEmpty()) {
-            throw new UserNotFoundException("Пользователь не найден");
-        }
         if (filmLiked.getLikedByUsers().contains(userId)) {
             throw new UserAlreadyLikedFilmException("Пользователь с ID " + userId + " уже поставил лайк");
         }
         filmLiked.addLike(userId);
         inMemoryFilmStorage.saveFilm(filmLiked);
+        log.info("Пользователь {} поставил лайк фильму {}", userId, id);
     }
 
     @Override
-    public ResponseEntity<Void> removeLike(Long id, Long userId) {
+    public void removeLike(Long id, Long userId) {
         Optional<Film> filmOptional = inMemoryFilmStorage.getFilmById(id);
-        if (filmOptional.isEmpty()) {
-            throw new FilmNotFoundException("Фильм не найден");
-        }
+        Optional<User> userOptional = inMemoryUserStorage.findUserById(userId);
+        filmOptional.orElseThrow(() -> new FilmNotFoundException("Фильм не найден"));
+        userOptional.orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
         Film filmRemove = filmOptional.get();
-
-        Optional<User> userOptional = inMemoryUserStorage.findUserById(userId);
-        if (userOptional.isEmpty()) {
-            throw new UserNotFoundException("Пользователь не найден");
-        }
 
         if (!filmRemove.getLikedByUsers().contains(userId)) {
             throw new UserNotLikedFilmException("Пользователь с ID " + userId + " не ставил лайк фильму " + id);
         }
-        filmRemove.removeLike(userId);
-        inMemoryFilmStorage.saveFilm(filmRemove);
 
-        return ResponseEntity.ok().build();
+        filmRemove.removeLike(userId);
+        inMemoryFilmStorage.updateFilm(filmRemove);
+        log.info("Пользователь {} убрал лайк у фильма {}", userId, id);
     }
 
     @Override

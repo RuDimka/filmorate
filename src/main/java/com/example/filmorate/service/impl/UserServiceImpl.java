@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final InMemoryUserStorage inMemoryUserStorage;
     private final ValidateUser validateUser;
-    private final User user;
+    //private final User user;
 
     @Override
     public UserDto addUser(UserDto userDto) {
@@ -39,9 +41,8 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(UserDto userDto) {
         log.info("Обновлена информация по пользователю {}", userDto.getId());
         Optional<User> existingUsers = inMemoryUserStorage.findUserById(userDto.getId());
-        if (existingUsers.isEmpty()) {
-            throw new UserNotFoundException("Пользователь с таким id " + userDto.getId() + " не найден");
-        }
+        existingUsers.orElseThrow(() -> new UserNotFoundException("Пользователь с таким id " + userDto.getId() + " не найден"));
+
         User existingUser = existingUsers.get();
         existingUser.setName(userDto.getName());
         existingUser.setEmail(userDto.getEmail());
@@ -64,12 +65,9 @@ public class UserServiceImpl implements UserService {
     public Optional<User> addFriends(Long id, Long friendId) {
         Optional<User> userOptional = inMemoryUserStorage.findUserById(id);
         Optional<User> friendOptional = inMemoryUserStorage.findUserById(friendId);
-        if (userOptional.isEmpty()) {
-            throw new UserNotFoundException("Пользователь с ID " + id + " не найден.");
-        }
-        if (friendOptional.isEmpty()) {
-            throw new FriendNotFoundException("Друг с ID " + friendId + " не найден.");
-        }
+        userOptional.orElseThrow(() -> new UserNotFoundException("Пользователь с ID " + id + " не найден."));
+        friendOptional.orElseThrow(() -> new FriendNotFoundException("Друг с ID " + friendId + " не найден."));
+
         User getUser = userOptional.get();
         User getFriend = friendOptional.get();
 
@@ -78,23 +76,26 @@ public class UserServiceImpl implements UserService {
         }
         getUser.addFriend(friendId);
         getFriend.addFriend(id);
-        inMemoryUserStorage.saveUser(getUser);
-        inMemoryUserStorage.saveUser(getFriend);
+        inMemoryUserStorage.updateUser(getUser);
+        inMemoryUserStorage.updateUser(getFriend);
         return Optional.of(getUser);
     }
 
     @Override
     public void removeFriends(Long id, Long friendId) {
         Optional<User> userOptional = inMemoryUserStorage.findUserById(id);
-        if(userOptional.isEmpty()) {
-            throw new UserNotFoundException("Пользователь или друг не найдены");
-        }
         Optional<User> friendOptional = inMemoryUserStorage.findUserById(friendId);
-        if (friendOptional.isPresent()) {
-            User userRemove = userOptional.get();
-            inMemoryUserStorage.removeFriends(friendId);
-            inMemoryUserStorage.saveUser(userRemove);
-        }
+        userOptional.orElseThrow(() -> new UserNotFoundException("Пользователь или друг не найдены"));
+        friendOptional.orElseThrow(() -> new FriendNotFoundException("Друг с ID " + friendId + " не найден."));
+
+        User userRemove = userOptional.get();
+        User friendRemove = friendOptional.get();
+        userRemove.removeFriends(friendId);
+        friendRemove.removeFriends(id);
+        inMemoryUserStorage.saveUser(userRemove);
+        inMemoryUserStorage.saveUser(friendRemove);
+        log.info("Пользователь {} удален из друзей", id);
+        log.info("Пользователь {} удален из друзей", friendId);
     }
 
     @Override
@@ -105,9 +106,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Optional<User>> getFriends(Long id) {
         Optional<User> userById = inMemoryUserStorage.findUserById(id);
-        if (userById.isEmpty()) {
-            throw new UserNotFoundException("Пользователь с ID " + id + " не найден.");
-        }
+        userById.orElseThrow(() -> new UserNotFoundException("Пользователь с ID " + id + " не найден."));
         User getUser = userById.get();
         List<Optional<User>> friendsList = new ArrayList<>();
         for (Long friendId : getUser.getFriends()) {

@@ -41,8 +41,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserNotLikedFilmException.class)
-    public ResponseEntity<String> handlerUserNotLikedFilmException(UserNotLikedFilmException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    public ResponseEntity <Map<String, String>> handlerUserNotLikedFilmException(UserNotLikedFilmException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(UserAlreadyLikedFilmException.class)

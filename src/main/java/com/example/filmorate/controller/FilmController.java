@@ -37,17 +37,15 @@ public class FilmController {
     }
 
     @PutMapping("{id}/like/{userId}")
-    public ResponseEntity<Void> addLike(@PathVariable Long id,
+    public void addLike(@PathVariable Long id,
                                   @PathVariable Long userId) {
         filmService.addLike(id, userId);
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("{id}/like/{userId}")
-    public ResponseEntity<Void> removeLike(@PathVariable Long id,
+    public void removeLike(@PathVariable Long id,
                            @PathVariable Long userId) {
-
-        return filmService.removeLike(id, userId);
+        filmService.removeLike(id, userId);
     }
 
     @GetMapping("/popular")

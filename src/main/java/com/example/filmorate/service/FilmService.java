@@ -17,7 +17,7 @@ public interface FilmService {
 
     void addLike(Long id, Long userId);
 
-    ResponseEntity<Void> removeLike(Long id, Long userId);
+    void removeLike(Long id, Long userId);
 
     List<Film> getTopFilms(Long count);
 }
