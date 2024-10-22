@@ -2,6 +2,7 @@ package com.example.filmorate.service.impl;
 
 import com.example.filmorate.dao.User;
 import com.example.filmorate.dto.UserDto;
+import com.example.filmorate.exceptions.FriendAlreadyExistsException;
 import com.example.filmorate.exceptions.FriendNotFoundException;
 import com.example.filmorate.exceptions.UserNotFoundException;
 import com.example.filmorate.mapper.UserMapper;
@@ -61,64 +62,58 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> addFriends(Long id, Long friendId) {
-        Optional<User> userById = inMemoryUserStorage.findUserById(id);
-        Optional<User> friendsById = inMemoryUserStorage.findUserById(friendId);
-        if (userById.isPresent() && friendsById.isPresent()) {
-            User userAdd = userById.get();
-            User friend = friendsById.get();
-            userAdd.addFriend(friend.getId());
-            inMemoryUserStorage.saveUser(userAdd);
-            return Optional.of(userAdd);
-        } else {
-            throw new FriendNotFoundException("Пользователь или друг не найдены");
+        Optional<User> userOptional = inMemoryUserStorage.findUserById(id);
+        Optional<User> friendOptional = inMemoryUserStorage.findUserById(friendId);
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException("Пользователь с ID " + id + " не найден.");
         }
+        if (friendOptional.isEmpty()) {
+            throw new FriendNotFoundException("Друг с ID " + friendId + " не найден.");
+        }
+        User getUser = userOptional.get();
+        User getFriend = friendOptional.get();
+
+        if (getUser.getFriends().contains(friendId)) {
+            throw new FriendAlreadyExistsException("Пользователь " + id + " уже является другом " + friendId);
+        }
+        getUser.addFriend(friendId);
+        getFriend.addFriend(id);
+        inMemoryUserStorage.saveUser(getUser);
+        inMemoryUserStorage.saveUser(getFriend);
+        return Optional.of(getUser);
     }
 
     @Override
     public void removeFriends(Long id, Long friendId) {
         Optional<User> userOptional = inMemoryUserStorage.findUserById(id);
+        if(userOptional.isEmpty()) {
+            throw new UserNotFoundException("Пользователь или друг не найдены");
+        }
         Optional<User> friendOptional = inMemoryUserStorage.findUserById(friendId);
-        if (userOptional.isPresent() && friendOptional.isPresent()) {
+        if (friendOptional.isPresent()) {
             User userRemove = userOptional.get();
             inMemoryUserStorage.removeFriends(friendId);
             inMemoryUserStorage.saveUser(userRemove);
-        } else {
-            throw new UserNotFoundException("Пользователь или друг не найдены");
         }
     }
 
     @Override
     public List<UserDto> getCommonFriends(Long id, Long otherId) {
-//        Optional<User> userOptional = inMemoryUserStorage.findUserById(id);
-//        Optional<User> otherUserOptional = inMemoryUserStorage.findUserById(otherId);
-//        if (userOptional.isPresent() && otherUserOptional.isPresent()) {
-//            User thisUsers = userOptional.get();
-//            User otherUser = otherUserOptional.get();
-//
-//            Set<Long> thisUserFriends = new HashSet<>(thisUsers.getFriends());
-//            Set<Long> otherUsersFriends = new HashSet<>(otherUser.getFriends());
-//            thisUserFriends.retainAll(otherUsersFriends);
-//
-//            List<UserDto> commonFriends = new ArrayList<>();
-//            for(Long friendId : thisUserFriends) {
-//                Optional<User> friendOptional = inMemoryUserStorage.findUserById(friendId);
-//                friendOptional.isPresent();
-//        }
-//        return commonFriends;
-//    }
         return List.of();
     }
 
     @Override
     public List<Optional<User>> getFriends(Long id) {
         Optional<User> userById = inMemoryUserStorage.findUserById(id);
+        if (userById.isEmpty()) {
+            throw new UserNotFoundException("Пользователь с ID " + id + " не найден.");
+        }
+        User getUser = userById.get();
         List<Optional<User>> friendsList = new ArrayList<>();
-        if (userById.isPresent() && user.getFriends() != null) {
-            for (Long friendId : user.getFriends()) {
-                Optional<User> friend = inMemoryUserStorage.findUserById(friendId);
-                if (friend.isPresent()) {
-                    friendsList.add(friend);
-                }
+        for (Long friendId : getUser.getFriends()) {
+            Optional<User> friend = inMemoryUserStorage.findUserById(friendId);
+            if (friend.isPresent()) {
+                friendsList.add(friend);
             }
         }
         return friendsList;

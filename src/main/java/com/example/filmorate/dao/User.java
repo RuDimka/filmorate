@@ -1,9 +1,11 @@
 package com.example.filmorate.dao;
 
+import com.example.filmorate.exceptions.FriendAlreadyExistsException;
 import lombok.Data;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -14,9 +16,9 @@ public class User {
     private String name;
     private String email;
     private LocalDate birthday;
-    private Set<Long> friends;
+    private Set<Long> friends = new HashSet<>();
 
     public void addFriend(Long friend) {
-        friends.add(friend);
+       friends.add(friend);
     }
 }

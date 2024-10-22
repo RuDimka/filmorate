@@ -1,9 +1,11 @@
 package com.example.filmorate.controller;
 
+import com.example.filmorate.dao.Film;
 import com.example.filmorate.dto.FilmDto;
 import com.example.filmorate.service.FilmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,19 +37,21 @@ public class FilmController {
     }
 
     @PutMapping("{id}/like/{userId}")
-    public void userLikeTheMovie(@PathVariable Long id,
-                                 @PathVariable Long userId) {
-        filmService.userLikeTheMovie(id, userId);
+    public ResponseEntity<Void> addLike(@PathVariable Long id,
+                                  @PathVariable Long userId) {
+        filmService.addLike(id, userId);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("{id}/like/{userId}")
-    public void removeLike(@PathVariable Long id,
+    public ResponseEntity<Void> removeLike(@PathVariable Long id,
                            @PathVariable Long userId) {
-        filmService.removeLike(id, userId);
+
+        return filmService.removeLike(id, userId);
     }
 
     @GetMapping("/popular")
-    public List<FilmDto> getTopFilms(@RequestParam Long count) {
+    public List<Film> getTopFilms(@RequestParam Long count) {
         return filmService.getTopFilms(count);
     }
 }

@@ -1,9 +1,6 @@
 package com.example.filmorate.config;
 
-import com.example.filmorate.exceptions.FilmNotFoundException;
-import com.example.filmorate.exceptions.FriendNotFoundException;
-import com.example.filmorate.exceptions.UserNotFoundException;
-import com.example.filmorate.exceptions.ValidateException;
+import com.example.filmorate.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -42,4 +39,20 @@ public class GlobalExceptionHandler {
         response.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
+
+    @ExceptionHandler(UserNotLikedFilmException.class)
+    public ResponseEntity<String> handlerUserNotLikedFilmException(UserNotLikedFilmException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UserAlreadyLikedFilmException.class)
+    public ResponseEntity<String> handlerUserAlreadyLikedFilmException(UserAlreadyLikedFilmException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(FriendAlreadyExistsException.class)
+    public ResponseEntity<String> handlerFriendAlreadyExistsException(FriendAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
 }

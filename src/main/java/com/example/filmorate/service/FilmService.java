@@ -1,6 +1,8 @@
 package com.example.filmorate.service;
 
+import com.example.filmorate.dao.Film;
 import com.example.filmorate.dto.FilmDto;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,9 +15,9 @@ public interface FilmService {
 
     List<FilmDto> getAllFilms(FilmDto filmDto);
 
-    void userLikeTheMovie(Long id, Long userId);
+    void addLike(Long id, Long userId);
 
-    void removeLike(Long id, Long userId);
+    ResponseEntity<Void> removeLike(Long id, Long userId);
 
-    List<FilmDto> getTopFilms(Long count);
+    List<Film> getTopFilms(Long count);
 }
