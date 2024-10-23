@@ -5,10 +5,10 @@ import com.example.filmorate.dto.FilmDto;
 import com.example.filmorate.service.FilmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,7 +38,7 @@ public class FilmController {
 
     @PutMapping("{id}/like/{userId}")
     public void addLike(@PathVariable Long id,
-                                  @PathVariable Long userId) {
+                        @PathVariable Long userId) {
         filmService.addLike(id, userId);
     }
 
@@ -49,7 +49,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getTopFilms(@RequestParam Long count) {
+    public List<Film> getTopFilms(@RequestParam Optional<Integer> count) {
         return filmService.getTopFilms(count);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.filmorate.config;
+package com.example.filmorate.controller.advice;
 
 import com.example.filmorate.exceptions.*;
 import org.springframework.http.HttpStatus;

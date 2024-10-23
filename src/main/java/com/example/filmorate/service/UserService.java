@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public interface UserService {
@@ -19,7 +20,7 @@ public interface UserService {
 
     void removeFriends(Long id, Long friendId);
 
-    List<UserDto> getCommonFriends(Long id, Long otherId);
+    Set<Long> getCommonFriends(Long id, Long otherId);
 
     List<Optional<User>> getFriends(Long id);
 }

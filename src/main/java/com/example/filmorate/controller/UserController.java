@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,8 +55,8 @@ public class UserController {
     }
 
     @GetMapping("{id}/friends/common/{otherId}")
-    public List<UserDto> getCommonFriends(@PathVariable Long id,
-                                        @PathVariable Long otherId) {
+    public Set<Long> getCommonFriends(@PathVariable Long id,
+                                      @PathVariable Long otherId) {
         return userService.getCommonFriends(id, otherId);
     }
 }

@@ -75,7 +75,6 @@ public class FilmServiceImpl implements FilmService {
             throw new UserAlreadyLikedFilmException("Пользователь с ID " + userId + " уже поставил лайк");
         }
         filmLiked.addLike(userId);
-        inMemoryFilmStorage.saveFilm(filmLiked);
         log.info("Пользователь {} поставил лайк фильму {}", userId, id);
     }
 
@@ -83,26 +82,23 @@ public class FilmServiceImpl implements FilmService {
     public void removeLike(Long id, Long userId) {
         Optional<Film> filmOptional = inMemoryFilmStorage.getFilmById(id);
         Optional<User> userOptional = inMemoryUserStorage.findUserById(userId);
-        filmOptional.orElseThrow(() -> new FilmNotFoundException("Фильм не найден"));
+        Film filmRemoveLike = filmOptional.orElseThrow(() -> new FilmNotFoundException("Фильм не найден"));
         userOptional.orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
-        Film filmRemove = filmOptional.get();
-
-        if (!filmRemove.getLikedByUsers().contains(userId)) {
+        if (!filmRemoveLike.getLikedByUsers().contains(userId)) {
             throw new UserNotLikedFilmException("Пользователь с ID " + userId + " не ставил лайк фильму " + id);
         }
 
-        filmRemove.removeLike(userId);
-        inMemoryFilmStorage.updateFilm(filmRemove);
+        filmRemoveLike.removeLike(userId);
         log.info("Пользователь {} убрал лайк у фильма {}", userId, id);
     }
 
     @Override
-    public List<Film> getTopFilms(Long count) {
-        List<Film> filmById = inMemoryFilmStorage.getAllFilm();
-        return filmById.stream()
-                .sorted(Comparator.comparingInt(film -> film.getLikedByUsers().size()))
-                .limit(10)
+    public List<Film> getTopFilms(Optional<Integer> count) {
+        List<Film> filmList = inMemoryFilmStorage.getAllFilm();
+        return filmList.stream()
+                .sorted(Comparator.comparingInt(Film::getLikeCount).reversed())
+                .limit(count.orElse(10))
                 .collect(Collectors.toList());
     }
 }

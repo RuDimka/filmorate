@@ -2,7 +2,6 @@ package com.example.filmorate.service.impl;
 
 import com.example.filmorate.dao.User;
 import com.example.filmorate.dto.UserDto;
-import com.example.filmorate.exceptions.FriendAlreadyExistsException;
 import com.example.filmorate.exceptions.FriendNotFoundException;
 import com.example.filmorate.exceptions.UserNotFoundException;
 import com.example.filmorate.mapper.UserMapper;
@@ -13,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +23,6 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final InMemoryUserStorage inMemoryUserStorage;
     private final ValidateUser validateUser;
-    //private final User user;
 
     @Override
     public UserDto addUser(UserDto userDto) {
@@ -56,6 +52,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllUsers(UserDto userDto) {
         log.info("Список пользователей");
         List<User> listUser = inMemoryUserStorage.getAllUsers();
+        log.info("List all users");
         return listUser.stream()
                 .map(userMapper::userToUserDto)
                 .collect(Collectors.toList());
@@ -71,13 +68,8 @@ public class UserServiceImpl implements UserService {
         User getUser = userOptional.get();
         User getFriend = friendOptional.get();
 
-        if (getUser.getFriends().contains(friendId)) {
-            throw new FriendAlreadyExistsException("Пользователь " + id + " уже является другом " + friendId);
-        }
         getUser.addFriend(friendId);
         getFriend.addFriend(id);
-        inMemoryUserStorage.updateUser(getUser);
-        inMemoryUserStorage.updateUser(getFriend);
         return Optional.of(getUser);
     }
 
@@ -92,15 +84,26 @@ public class UserServiceImpl implements UserService {
         User friendRemove = friendOptional.get();
         userRemove.removeFriends(friendId);
         friendRemove.removeFriends(id);
-        inMemoryUserStorage.saveUser(userRemove);
-        inMemoryUserStorage.saveUser(friendRemove);
         log.info("Пользователь {} удален из друзей", id);
         log.info("Пользователь {} удален из друзей", friendId);
     }
 
     @Override
-    public List<UserDto> getCommonFriends(Long id, Long otherId) {
-        return List.of();
+    public Set<Long> getCommonFriends(Long id, Long otherId) {
+        Optional<User> userOptional = inMemoryUserStorage.findUserById(id);
+        Optional<User> otherUserOptional = inMemoryUserStorage.findUserById(otherId);
+
+        User userList = userOptional.orElseThrow(() -> new UserNotFoundException("Пользователь с ID " + id + " не найден."));
+        User otherUserList = otherUserOptional.orElseThrow(() -> new UserNotFoundException("Пользователь с ID " + otherId + " не найден."));
+
+        if (userList == null || otherUserList == null) {
+            return new HashSet<>();
+        }
+
+        Set<Long> commonFriends = new HashSet<>(userList.getFriends());
+        commonFriends.retainAll(otherUserList.getFriends());
+        log.info("Общий список друзей пользователя {} с пользователем {}: {}", id, otherId, commonFriends);
+        return commonFriends;
     }
 
     @Override

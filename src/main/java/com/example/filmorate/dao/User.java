@@ -1,6 +1,5 @@
 package com.example.filmorate.dao;
 
-import com.example.filmorate.exceptions.FriendAlreadyExistsException;
 import lombok.Data;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +18,7 @@ public class User {
     private Set<Long> friends = new HashSet<>();
 
     public void addFriend(Long friend) {
-       friends.add(friend);
+        friends.add(friend);
     }
 
     public void removeFriends(Long friendId) {
