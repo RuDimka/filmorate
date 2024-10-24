@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,23 +39,27 @@ public class UserController {
     @PutMapping("{id}/friends/{friendId}")
     public Optional<User> addFriends(@PathVariable Long id,
                                      @PathVariable Long friendId) {
+        log.info("ПОлучен запрос на добавления в друзья");
         return userService.addFriends(id, friendId);
     }
 
     @DeleteMapping("{id}/friends/{friendId}")
     public void removeFriends(@PathVariable Long id,
                               @PathVariable Long friendId) {
+        log.info("Получен запрос на удаление из друзей");
         userService.removeFriends(id, friendId);
     }
 
     @GetMapping("{id}/friends")
     public List<Optional<User>> getFriends(@PathVariable Long id) {
+        log.info("Получен запрос на список друзей");
         return userService.getFriends(id);
     }
 
     @GetMapping("{id}/friends/common/{otherId}")
     public List<User> getCommonFriends(@PathVariable Long id,
-                                      @PathVariable Long otherId) {
+                                       @PathVariable Long otherId) {
+        log.info("ПОлучен запрос на список общих друзей");
         return userService.getCommonFriends(id, otherId);
     }
 }

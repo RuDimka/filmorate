@@ -32,7 +32,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public FilmDto addNewFilm(FilmDto filmDto) {
-        log.info("Добавлен фильм {}", filmDto.getName());
+        log.info("Добавлен новый фильм {}", filmDto.getName());
         validateFilm.validateToFilms(filmDto);
         Film newFilm = filmMapper.filmDtoToEntity(filmDto);
         Film savedFilm = inMemoryFilmStorage.saveFilm(newFilm);
@@ -96,6 +96,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public List<Film> getTopFilms(Optional<Integer> count) {
         List<Film> filmList = inMemoryFilmStorage.getAllFilm();
+        log.info("Список то 10 фильмов {}", filmList);
         return filmList.stream()
                 .sorted(Comparator.comparingInt(Film::getLikeCount).reversed())
                 .limit(count.orElse(10))

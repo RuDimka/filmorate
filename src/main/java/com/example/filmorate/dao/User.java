@@ -27,11 +27,11 @@ public class User {
         friends.remove(friendId);
     }
 
-    public List<Long> getListFriends(){
+    public List<Long> getListFriends() {
         return new ArrayList<>(friends);
     }
 
-    public boolean containsFriend(Long id){
+    public boolean containsFriend(Long id) {
         return friends.contains(id);
     }
 }

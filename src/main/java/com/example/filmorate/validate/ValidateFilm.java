@@ -1,7 +1,6 @@
 package com.example.filmorate.validate;
 
 import com.example.filmorate.dto.FilmDto;
-import com.example.filmorate.exceptions.FilmNotFoundException;
 import com.example.filmorate.exceptions.ValidateException;
 import org.springframework.stereotype.Component;
 

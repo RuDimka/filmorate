@@ -50,9 +50,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers(UserDto userDto) {
-        log.info("Список пользователей");
         List<User> listUser = inMemoryUserStorage.getAllUsers();
-        log.info("List all users");
+        log.info("Список всех пользователей");
         return listUser.stream()
                 .map(userMapper::userToUserDto)
                 .collect(Collectors.toList());
@@ -68,11 +67,12 @@ public class UserServiceImpl implements UserService {
         User getUser = userOptional.get();
         User getFriend = friendOptional.get();
 
-        if(getUser.containsFriend(friendId)){
+        if (getUser.containsFriend(friendId)) {
             log.warn("Друг существует");
         }
         getUser.addFriend(friendId);
         getFriend.addFriend(id);
+        log.info("Пользователь {} добавил в друзья пользователя {}", id, friendId);
         return Optional.of(getUser);
     }
 
@@ -129,6 +129,7 @@ public class UserServiceImpl implements UserService {
                 friendsList.add(friend);
             }
         }
+        log.info("Список друзей {} пользователя {}", friendsList, id);
         return friendsList;
     }
 }

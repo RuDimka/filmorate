@@ -39,17 +39,20 @@ public class FilmController {
     @PutMapping("{id}/like/{userId}")
     public void addLike(@PathVariable Long id,
                         @PathVariable Long userId) {
+        log.info("Получен запрос на добавление лайка");
         filmService.addLike(id, userId);
     }
 
     @DeleteMapping("{id}/like/{userId}")
     public void removeLike(@PathVariable Long id,
                            @PathVariable Long userId) {
+        log.info("Получен запрос на удаление лайка");
         filmService.removeLike(id, userId);
     }
 
     @GetMapping("/popular")
     public List<Film> getTopFilms(@RequestParam Optional<Integer> count) {
+        log.info("Получен запрос на список популярных фильмов");
         return filmService.getTopFilms(count);
     }
 }
