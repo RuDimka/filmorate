@@ -20,7 +20,7 @@ public interface UserService {
 
     void removeFriends(Long id, Long friendId);
 
-    Set<Long> getCommonFriends(Long id, Long otherId);
+    List<User> getCommonFriends(Long id, Long otherId);
 
     List<Optional<User>> getFriends(Long id);
 }

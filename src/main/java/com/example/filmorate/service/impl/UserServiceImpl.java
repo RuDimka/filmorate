@@ -68,6 +68,9 @@ public class UserServiceImpl implements UserService {
         User getUser = userOptional.get();
         User getFriend = friendOptional.get();
 
+        if(getUser.containsFriend(friendId)){
+            log.warn("Друг существует");
+        }
         getUser.addFriend(friendId);
         getFriend.addFriend(id);
         return Optional.of(getUser);
@@ -89,21 +92,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<Long> getCommonFriends(Long id, Long otherId) {
+    public List<User> getCommonFriends(Long id, Long otherId) {
         Optional<User> userOptional = inMemoryUserStorage.findUserById(id);
         Optional<User> otherUserOptional = inMemoryUserStorage.findUserById(otherId);
 
-        User userList = userOptional.orElseThrow(() -> new UserNotFoundException("Пользователь с ID " + id + " не найден."));
-        User otherUserList = otherUserOptional.orElseThrow(() -> new UserNotFoundException("Пользователь с ID " + otherId + " не найден."));
-
-        if (userList == null || otherUserList == null) {
-            return new HashSet<>();
+        if (userOptional.isEmpty() || otherUserOptional.isEmpty()) {
+            throw new UserNotFoundException("Пользователь не найден");
         }
 
-        Set<Long> commonFriends = new HashSet<>(userList.getFriends());
-        commonFriends.retainAll(otherUserList.getFriends());
-        log.info("Общий список друзей пользователя {} с пользователем {}: {}", id, otherId, commonFriends);
-        return commonFriends;
+        User getUser = userOptional.get();
+        User getOtherUser = otherUserOptional.get();
+        List<Long> friendId1 = getUser.getListFriends();
+        List<Long> friendId2 = getOtherUser.getListFriends();
+
+        Set<Long> commonFriends = new HashSet<>(friendId1);
+        commonFriends.retainAll(friendId2);
+
+        List<User> friends = new ArrayList<>();
+        for (Long friendId : commonFriends) {
+            Optional<User> friend = inMemoryUserStorage.findUserById(friendId);
+            friend.ifPresent(friends::add);
+        }
+        log.info("Общий список друзей пользователя {} с пользователем {}: {}", id, otherId, friends);
+        return friends;
     }
 
     @Override

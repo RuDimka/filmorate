@@ -4,7 +4,9 @@ import lombok.Data;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -23,5 +25,13 @@ public class User {
 
     public void removeFriends(Long friendId) {
         friends.remove(friendId);
+    }
+
+    public List<Long> getListFriends(){
+        return new ArrayList<>(friends);
+    }
+
+    public boolean containsFriend(Long id){
+        return friends.contains(id);
     }
 }
