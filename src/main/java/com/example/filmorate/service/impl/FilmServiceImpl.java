@@ -11,7 +11,7 @@ import com.example.filmorate.mapper.FilmMapper;
 import com.example.filmorate.service.FilmService;
 import com.example.filmorate.storage.FilmStorage;
 import com.example.filmorate.storage.UserStorage;
-import com.example.filmorate.validation.ValidationFilm;
+import com.example.filmorate.validation.ValidatorFilm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,13 +27,13 @@ import java.util.stream.Collectors;
 public class FilmServiceImpl implements FilmService {
     public final FilmStorage filmStorage;
     private final FilmMapper filmMapper;
-    private final ValidationFilm validationFilm;
+    private final ValidatorFilm validationFilm;
     private final UserStorage userStorage;
 
     @Override
     public FilmDto addNewFilm(FilmDto filmDto) {
         log.info("Добавлен новый фильм {}", filmDto.getName());
-        validationFilm.validateToFilms(filmDto);
+        validationFilm.validationFilm(filmDto);
         Film newFilm = filmMapper.filmDtoToEntity(filmDto);
         Film savedFilm = filmStorage.saveFilm(newFilm);
         return filmMapper.filmToFIlmDto(savedFilm);

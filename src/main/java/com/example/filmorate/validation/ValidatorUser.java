@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class ValidationUser {
+public class ValidatorUser {
 
-    public void validateByUser(UserDto userDto) {
+    public void validationUser(UserDto userDto) {
         if (userDto.getEmail().isEmpty() || !userDto.getEmail().contains("@")) {
             throw new ValidationException("Не заполнен или не корректный адрес электронной почты");
         }

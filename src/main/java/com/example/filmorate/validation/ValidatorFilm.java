@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class ValidationFilm {
+public class ValidatorFilm {
     public static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1892, 12, 28);
     public static final int MAX_DESCRIPTION_LENGTH = 200;
 
-    public void validateToFilms(FilmDto filmDto) {
+    public void validationFilm(FilmDto filmDto) {
 
         if (filmDto.getName().isEmpty()) {
             throw new ValidationException("Не заполнено название фильма");

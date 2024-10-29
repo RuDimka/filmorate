@@ -7,7 +7,7 @@ import com.example.filmorate.exceptions.UserNotFoundException;
 import com.example.filmorate.mapper.UserMapper;
 import com.example.filmorate.service.UserService;
 import com.example.filmorate.storage.UserStorage;
-import com.example.filmorate.validation.ValidationUser;
+import com.example.filmorate.validation.ValidatorUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,12 +22,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final UserStorage userStorage;
-    private final ValidationUser validateUser;
+    private final ValidatorUser validateUser;
 
     @Override
     public UserDto addUser(UserDto userDto) {
         log.info("Добавлен пользователь {}", userDto.getName());
-        validateUser.validateByUser(userDto);
+        validateUser.validationUser(userDto);
         User newUser = userMapper.userDtoToUser(userDto);
         User savedUser = userStorage.saveUser(newUser);
         return userMapper.userToUserDto(savedUser);
