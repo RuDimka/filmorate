@@ -1,7 +1,7 @@
 package com.example.filmorate;
 
 import com.example.filmorate.dto.UserDto;
-import com.example.filmorate.validate.ValidateUser;
+import com.example.filmorate.validation.ValidationUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,11 +9,11 @@ import java.time.LocalDate;
 
 class ValidateUserTest {
 
-    private ValidateUser validateUser;
+    private ValidationUser validateUser;
 
     @BeforeEach
     void setUp() {
-        validateUser = new ValidateUser();
+        validateUser = new ValidationUser();
     }
 
     @Test

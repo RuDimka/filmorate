@@ -1,6 +1,7 @@
-package com.example.filmorate.storage;
+package com.example.filmorate.storage.impl;
 
 import com.example.filmorate.dao.Film;
+import com.example.filmorate.storage.FilmStorage;
 import org.springframework.stereotype.Component;
 
 import java.util.*;

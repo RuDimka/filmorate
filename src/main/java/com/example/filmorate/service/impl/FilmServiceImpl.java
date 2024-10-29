@@ -9,9 +9,9 @@ import com.example.filmorate.exceptions.UserNotFoundException;
 import com.example.filmorate.exceptions.UserNotLikedFilmException;
 import com.example.filmorate.mapper.FilmMapper;
 import com.example.filmorate.service.FilmService;
-import com.example.filmorate.storage.InMemoryFilmStorage;
-import com.example.filmorate.storage.InMemoryUserStorage;
-import com.example.filmorate.validate.ValidateFilm;
+import com.example.filmorate.storage.FilmStorage;
+import com.example.filmorate.storage.UserStorage;
+import com.example.filmorate.validation.ValidationFilm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,24 +25,24 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class FilmServiceImpl implements FilmService {
-    public final InMemoryFilmStorage inMemoryFilmStorage;
+    public final FilmStorage filmStorage;
     private final FilmMapper filmMapper;
-    private final ValidateFilm validateFilm;
-    private final InMemoryUserStorage inMemoryUserStorage;
+    private final ValidationFilm validationFilm;
+    private final UserStorage userStorage;
 
     @Override
     public FilmDto addNewFilm(FilmDto filmDto) {
         log.info("Добавлен новый фильм {}", filmDto.getName());
-        validateFilm.validateToFilms(filmDto);
+        validationFilm.validateToFilms(filmDto);
         Film newFilm = filmMapper.filmDtoToEntity(filmDto);
-        Film savedFilm = inMemoryFilmStorage.saveFilm(newFilm);
+        Film savedFilm = filmStorage.saveFilm(newFilm);
         return filmMapper.filmToFIlmDto(savedFilm);
     }
 
     @Override
     public FilmDto updateFilmById(FilmDto filmDto) {
         log.info("Отредактирована информация по фильму {}", filmDto.getName());
-        Optional<Film> existingFilmOpt = inMemoryFilmStorage.getFilmById(filmDto.getId());
+        Optional<Film> existingFilmOpt = filmStorage.getFilmById(filmDto.getId());
         existingFilmOpt.orElseThrow(() -> new FilmNotFoundException("Фильм с id " + filmDto.getId() + " не найден"));
 
         Film existingFilm = existingFilmOpt.get();
@@ -50,14 +50,14 @@ public class FilmServiceImpl implements FilmService {
         existingFilm.setDescription(filmDto.getDescription());
         existingFilm.setReleaseDate(filmDto.getReleaseDate());
         existingFilm.setDuration(filmDto.getDuration());
-        Film updateFim = inMemoryFilmStorage.updateFilm(existingFilm);
+        Film updateFim = filmStorage.updateFilm(existingFilm);
         return filmMapper.filmToFIlmDto(updateFim);
     }
 
     @Override
     public List<FilmDto> getAllFilms(FilmDto filmDto) {
         log.info("Список всех фильмов");
-        List<Film> listFilm = inMemoryFilmStorage.getAllFilm();
+        List<Film> listFilm = filmStorage.getAllFilm();
         return listFilm.stream()
                 .map(filmMapper::filmToFIlmDto)
                 .collect(Collectors.toList());
@@ -65,8 +65,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void addLike(Long id, Long userId) {
-        Optional<Film> filmOptional = inMemoryFilmStorage.getFilmById(id);
-        Optional<User> userOptional = inMemoryUserStorage.findUserById(userId);
+        Optional<Film> filmOptional = filmStorage.getFilmById(id);
+        Optional<User> userOptional = userStorage.findUserById(userId);
         filmOptional.orElseThrow(() -> new FilmNotFoundException("Фильм не найден"));
         userOptional.orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         Film filmLiked = filmOptional.get();
@@ -80,8 +80,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void removeLike(Long id, Long userId) {
-        Optional<Film> filmOptional = inMemoryFilmStorage.getFilmById(id);
-        Optional<User> userOptional = inMemoryUserStorage.findUserById(userId);
+        Optional<Film> filmOptional = filmStorage.getFilmById(id);
+        Optional<User> userOptional = userStorage.findUserById(userId);
         Film filmRemoveLike = filmOptional.orElseThrow(() -> new FilmNotFoundException("Фильм не найден"));
         userOptional.orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
@@ -95,7 +95,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> getTopFilms(Optional<Integer> count) {
-        List<Film> filmList = inMemoryFilmStorage.getAllFilm();
+        List<Film> filmList = filmStorage.getAllFilm();
         log.info("Список то 10 фильмов {}", filmList);
         return filmList.stream()
                 .sorted(Comparator.comparingInt(Film::getLikeCount).reversed())
