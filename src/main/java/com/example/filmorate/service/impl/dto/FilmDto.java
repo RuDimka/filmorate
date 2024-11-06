@@ -1,13 +1,11 @@
-package com.example.filmorate.dao;
+package com.example.filmorate.service.impl.dto;
 
 import lombok.Data;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 
 @Data
-@Repository
-public class Film {
+public class FilmDto {
     private Long id;
     private String name;
     private String description;
