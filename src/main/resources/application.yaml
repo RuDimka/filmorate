@@ -1,5 +1,9 @@
 spring:
   application:
     name: filmorate
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: dima
+    password: dima
 server:
   port: 8080

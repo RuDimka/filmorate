@@ -1,4 +1,4 @@
-package com.example.filmorate.dao;
+package com.example.filmorate.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

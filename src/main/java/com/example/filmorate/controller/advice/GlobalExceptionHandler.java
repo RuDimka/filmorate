@@ -1,6 +1,6 @@
 package com.example.filmorate.controller.advice;
 
-import com.example.filmorate.dao.ErrorResponse;
+import com.example.filmorate.entity.ErrorResponse;
 import com.example.filmorate.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

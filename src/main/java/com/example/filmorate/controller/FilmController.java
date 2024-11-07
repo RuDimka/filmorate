@@ -1,6 +1,6 @@
 package com.example.filmorate.controller;
 
-import com.example.filmorate.dao.Film;
+import com.example.filmorate.entity.Film;
 import com.example.filmorate.dto.FilmDto;
 import com.example.filmorate.service.FilmService;
 import lombok.RequiredArgsConstructor;

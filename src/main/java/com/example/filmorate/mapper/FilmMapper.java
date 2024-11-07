@@ -1,6 +1,6 @@
 package com.example.filmorate.mapper;
 
-import com.example.filmorate.dao.Film;
+import com.example.filmorate.entity.Film;
 import com.example.filmorate.dto.FilmDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
