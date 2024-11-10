@@ -19,13 +19,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public UserDto addNewUser(@RequestBody UserDto userDto) {
+    public User addNewUser(@RequestBody UserDto userDto) {
         log.info("Получен запрос на добавление пользователя");
         return userService.addUser(userDto);
     }
 
     @PutMapping
-    public UserDto updateUser(@RequestBody UserDto userDto) {
+    public User updateUser(@RequestBody UserDto userDto) {
         log.info("Получен запрос на обновление информации о пользователе {}", userDto.getId());
         return userService.updateUser(userDto);
     }

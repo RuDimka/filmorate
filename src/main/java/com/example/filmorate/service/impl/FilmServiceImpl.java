@@ -1,8 +1,8 @@
 package com.example.filmorate.service.impl;
 
+import com.example.filmorate.dto.FilmDto;
 import com.example.filmorate.entity.Film;
 import com.example.filmorate.entity.User;
-import com.example.filmorate.dto.FilmDto;
 import com.example.filmorate.exceptions.FilmNotFoundException;
 import com.example.filmorate.exceptions.UserAlreadyLikedFilmException;
 import com.example.filmorate.exceptions.UserNotFoundException;
@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,7 +65,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void addLike(Long id, Long userId) {
         Optional<Film> filmOptional = filmDbStorage.getFilmById(id);
-        Optional<User> userOptional = userDbStorage.findUserById(userId);
+        Optional<User> userOptional = Optional.ofNullable(userDbStorage.findUserById(userId));
         filmOptional.orElseThrow(() -> new FilmNotFoundException("Фильм не найден"));
         userOptional.orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         Film filmLiked = filmOptional.get();
@@ -81,7 +80,7 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void removeLike(Long id, Long userId) {
         Optional<Film> filmOptional = filmDbStorage.getFilmById(id);
-        Optional<User> userOptional = userDbStorage.findUserById(userId);
+        Optional<User> userOptional = Optional.ofNullable(userDbStorage.findUserById(userId));
         Film filmRemoveLike = filmOptional.orElseThrow(() -> new FilmNotFoundException("Фильм не найден"));
         userOptional.orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 

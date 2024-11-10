@@ -9,9 +9,9 @@ import java.util.Optional;
 
 @Service
 public interface UserService {
-    UserDto addUser(UserDto userDto);
+    User addUser(UserDto userDto);
 
-    UserDto updateUser(UserDto userDto);
+    User updateUser(UserDto userDto);
 
     List<UserDto> getAllUsers(UserDto userDto);
 
