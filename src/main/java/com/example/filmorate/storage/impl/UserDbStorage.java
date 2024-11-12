@@ -1,12 +1,13 @@
 package com.example.filmorate.storage.impl;
 
 import com.example.filmorate.dto.UserDto;
-import com.example.filmorate.entity.FriendsStatus;
 import com.example.filmorate.entity.User;
 import com.example.filmorate.exceptions.UserNotFoundException;
+import com.example.filmorate.exceptions.UserRemoveException;
 import com.example.filmorate.mapper.UserMapperImpl;
 import com.example.filmorate.storage.UserStorage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -14,27 +15,14 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
 public class UserDbStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
     private final UserMapperImpl userMapperImpl;
-
-    private User makeUser(ResultSet resultSet) throws SQLException {
-        User user = new User();
-        user.setId(resultSet.getLong("id"));
-        user.setLogin(resultSet.getString("login"));
-        user.setName(resultSet.getString("name"));
-        user.setEmail(resultSet.getString("email"));
-        user.setBirthday(resultSet.getDate("birthday").toLocalDate());
-        return user;
-    }
 
     @Override
     public User saveUser(UserDto userDto) {
@@ -54,8 +42,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User findUserById(Long id) {
-        String sqlQuery = "SELECT * FROM users WHERE ID = ?";
-        List<User> userList = jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs), id);
+        List<User> userList = jdbcTemplate.query("SELECT * FROM users WHERE ID = ?", new BeanPropertyRowMapper<>(User.class));
         if (userList.isEmpty()) {
             throw new UserNotFoundException("Пользователь с id " + " не найден");
         }
@@ -65,8 +52,8 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User updateUser(UserDto userDto) {
         if (isUserExist(userDto.getId())) {
-            String sqlQuery = "update users set " + "login = ?, name = ?, email =?, birthday = ?";
-            jdbcTemplate.update(sqlQuery, userDto.getLogin(), userDto.getName(), userDto.getEmail(), userDto.getBirthday());
+            jdbcTemplate.update("UPDATE users SET login = ?, name = ?, email = ?, birthday = ?",
+                    userDto.getLogin(), userDto.getName(), userDto.getEmail(), userDto.getBirthday());
             return userMapperImpl.userDtoToUser(userDto);
         } else {
             throw new UserNotFoundException("Обновление не возможно, пользователь не найден");
@@ -75,39 +62,55 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getAllUsers() {
-        String sqlQuery = "SELECT * FROM users ORDER BY id LIMIT 1";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs));
+        return jdbcTemplate.query("SELECT * FROM users ORDER BY id LIMIT 1", new BeanPropertyRowMapper<>(User.class));
     }
 
     @Override
-    public void addFriend(Long friend) {
-
+    public void addFriend(Long userId, Long friendId) {
+        if (!isUserExist(userId) || !isUserExist(friendId)) {
+            throw new UserNotFoundException("Пользователь с таким id не найден");
+        }
+        jdbcTemplate.update("INSERT INTO friends (user_id, friend_id, status) VALUES (?, ?, ?)",
+                userId, friendId, "CONFIRMED");
     }
 
     @Override
-    public void removeFriends(Long friendId) {
-
+    public void removeFriends(Long userId, Long friendId) {
+        if (!isUserExist(userId) || !isUserExist(friendId)) {
+            throw new UserNotFoundException("Пользователь с таким id не найден");
+        }
+        boolean isDelete = jdbcTemplate.update("DELETE FROM friends WHERE user_id = ? AND friend_id = ?",
+                userId, friendId) < 1;
+        if (isDelete) {
+            throw new UserRemoveException("Пользователь в друзях не найден");
+        }
     }
 
     @Override
-    public List<Long> getListFriends() {
-        return List.of();
+    public List<User> getListFriends(Long userId) {
+        if (!isUserExist(userId)) {
+            throw new UserNotFoundException("Пользователь с таким id не найден");
+        }
+
+        String sqlQuery = "SELECT * FROM users WHERE users.id IN " +
+                "(SELECT friends.friend_id FROM friends WHERE friends.user_id = ? AND status = 'CONFIRMED');";
+        return jdbcTemplate.query(sqlQuery, new BeanPropertyRowMapper<>(User.class), userId);
     }
 
     @Override
-    public boolean containsFriend(Long id) {
-        return false;
-    }
-
-    @Override
-    public void statusFriends(FriendsStatus friendsStatus) {
-
+    public List<User> containsFriend(Long userId, Long otherId) {
+        if (!isUserExist(userId) || !isUserExist(otherId)) {
+            throw new UserNotFoundException("Пользователь с таким id не найден");
+        }
+        String sqlQuery = "SELECT * FROM users WHERE id IN " +
+                "(SELECT DISTINCT (friends.friend_id) FROM friends WHERE user_id = ? AND status = 'CONFIRMED'" +
+                " AND friend_id IN (SELECT friend_id FROM friends WHERE user_id = ? AND status = 'CONFIRMED'))";
+        return jdbcTemplate.query(sqlQuery, new BeanPropertyRowMapper<>(User.class), userId, otherId);
     }
 
     @Override
     public boolean isUserExist(long id) {
-        String sqlQuery = "SELECT COUNT(*) FROM users WHERE ID = ?";
-        int countUser = jdbcTemplate.queryForObject(sqlQuery, Integer.class, id);
+        int countUser = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users WHERE ID = ?", Integer.class, id);
         return countUser > 0;
     }
 }

@@ -15,11 +15,11 @@ public interface UserService {
 
     List<UserDto> getAllUsers(UserDto userDto);
 
-    Optional<User> addFriends(Long id, Long friendId);
+    void addFriends(Long id, Long friendId);
 
     void removeFriends(Long id, Long friendId);
 
     List<User> getCommonFriends(Long id, Long otherId);
 
-    List<Optional<User>> getFriends(Long id);
+    List<User> getFriends(Long id);
 }

@@ -65,4 +65,10 @@ public class GlobalExceptionHandler {
         log.info("Ошибка, пользователь уже добавлен в друзья");
         return ex.getMessage();
     }
+
+    @ExceptionHandler(UserRemoveException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public String handlerUserRemoveException(UserRemoveException ex) {
+        return ex.getMessage();
+    }
 }

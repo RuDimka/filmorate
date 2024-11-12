@@ -19,13 +19,13 @@ public class FilmController {
     private final FilmService filmService;
 
     @PostMapping
-    public FilmDto addFilm(@RequestBody FilmDto filmDto) {
+    public Film addFilm(@RequestBody FilmDto filmDto) {
         log.info("Получен запрос на добавление фильма");
         return filmService.addNewFilm(filmDto);
     }
 
     @PutMapping()
-    public FilmDto updateFilmById(@RequestBody FilmDto filmDto) {
+    public Film updateFilmById(@RequestBody FilmDto filmDto) {
         log.info("Получен запрос на редактирование фильма {} ", filmDto.getName());
         return filmService.updateFilmById(filmDto);
     }

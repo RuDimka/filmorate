@@ -1,14 +1,15 @@
 package com.example.filmorate.storage;
 
+import com.example.filmorate.dto.FilmDto;
 import com.example.filmorate.entity.Film;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface FilmStorage {
-    Film saveFilm(Film film);
+    Film saveFilm(FilmDto filmDto);
 
-    Film updateFilm(Film film);
+    Film updateFilm(FilmDto filmDto);
 
     List<Film> getAllFilm();
 

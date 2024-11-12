@@ -9,9 +9,9 @@ import java.util.Optional;
 
 @Service
 public interface FilmService {
-    FilmDto addNewFilm(FilmDto filmDto);
+    Film addNewFilm(FilmDto filmDto);
 
-    FilmDto updateFilmById(FilmDto filmDto);
+    Film updateFilmById(FilmDto filmDto);
 
     List<FilmDto> getAllFilms(FilmDto filmDto);
 

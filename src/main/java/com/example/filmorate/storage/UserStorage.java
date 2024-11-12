@@ -17,15 +17,13 @@ public interface UserStorage {
 
     List<User> getAllUsers();
 
-    public void addFriend(Long friend);
+    void addFriend(Long id, Long friend);
 
-    public void removeFriends(Long friendId);
+    void removeFriends(Long userId, Long friendId);
 
-    public List<Long> getListFriends();
+    List<User> getListFriends(Long userId);
 
-    public boolean containsFriend(Long id);
-
-    public void statusFriends(FriendsStatus friendsStatus);
+    List<User> containsFriend(Long userId, Long otherId);
 
     boolean isUserExist(long id);
 }

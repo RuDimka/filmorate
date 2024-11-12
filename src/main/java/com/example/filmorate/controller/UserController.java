@@ -1,7 +1,7 @@
 package com.example.filmorate.controller;
 
-import com.example.filmorate.entity.User;
 import com.example.filmorate.dto.UserDto;
+import com.example.filmorate.entity.User;
 import com.example.filmorate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,10 +37,10 @@ public class UserController {
     }
 
     @PutMapping("{id}/friends/{friendId}")
-    public Optional<User> addFriends(@PathVariable Long id,
-                                     @PathVariable Long friendId) {
-        log.info("ПОлучен запрос на добавления в друзья");
-        return userService.addFriends(id, friendId);
+    public void addFriends(@PathVariable Long id,
+                           @PathVariable Long friendId) {
+        log.info("Получен запрос на добавления в друзья");
+        userService.addFriends(id, friendId);
     }
 
     @DeleteMapping("{id}/friends/{friendId}")
@@ -51,7 +51,7 @@ public class UserController {
     }
 
     @GetMapping("{id}/friends")
-    public List<Optional<User>> getFriends(@PathVariable Long id) {
+    public List<User> getFriends(@PathVariable Long id) {
         log.info("Получен запрос на список друзей");
         return userService.getFriends(id);
     }

@@ -1,20 +1,22 @@
 package com.example.filmorate.entity;
 
-import lombok.Builder;
 import lombok.Data;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Data
-@Builder
+@Repository
 public class Film {
     private Long id;
     private String name;
     private String description;
     private LocalDate releaseDate;
     private int duration;
-    private Set<Long> likedByUsers;
+    private int rate;
     private String genres;
-    private String mpa;
+    private MpaRating mpa;
+    private List<Genre> genreList;
+    private Long likes;
 }
