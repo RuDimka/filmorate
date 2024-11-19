@@ -9,5 +9,6 @@ import java.util.List;
 public interface MpaService {
 
     MpaRating getRatingById(Integer ratingMpaId);
+
     List<MpaRating> getAllRating(MpaRating mpaRating);
 }

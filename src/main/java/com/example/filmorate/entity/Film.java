@@ -15,8 +15,7 @@ public class Film {
     private LocalDate releaseDate;
     private int duration;
     private int rate;
-    private String genres;
     private MpaRating mpa;
-    private List<Genre> genreList;
+    private List<Genre> genres;
     private Long likes;
 }

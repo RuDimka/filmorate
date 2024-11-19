@@ -71,4 +71,16 @@ public class GlobalExceptionHandler {
     public String handlerUserRemoveException(UserRemoveException ex) {
         return ex.getMessage();
     }
+
+    @ExceptionHandler(GenreNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handlerGenreNotFoundException(GenreNotFoundException ex){
+        return ex.getMessage();
+    }
+
+    @ExceptionHandler(MpaRatingNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handlerMpaRatingNotFoundException(MpaRatingNotFoundException ex) {
+        return ex.getMessage();
+    }
 }

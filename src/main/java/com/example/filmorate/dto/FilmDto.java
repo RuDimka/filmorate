@@ -16,5 +16,5 @@ public class FilmDto {
     private int duration;
     private int rate;
     private MpaRating mpa;
-    private List<Genre> genreList;
+    private List<Genre> genres;
 }

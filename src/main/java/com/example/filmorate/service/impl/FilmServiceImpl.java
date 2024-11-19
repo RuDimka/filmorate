@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,24 +49,19 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public void addLike(Long id, Long userId) {
-        filmDbStorage.addLike(userId);
+    public void addLike(long id, long userId) {
+        filmDbStorage.addLike(id, userId);
         log.info("Пользователь {} поставил лайк фильму {}", userId, id);
     }
 
     @Override
-    public void removeLike(Long id, Long userId) {
-        filmDbStorage.removeLike(userId);
+    public void removeLike(long id, long userId) {
+        filmDbStorage.removeLike(id, userId);
         log.info("Пользователь {} убрал лайк у фильма {}", userId, id);
     }
 
     @Override
-    public List<Film> getTopFilms(Optional<Integer> count) {
-        List<Film> filmList = filmDbStorage.getAllFilm();
-        log.info("Список то 10 фильмов {}", filmList);
-        return filmList.stream()
-                .sorted()
-                .limit(count.orElse(10))
-                .collect(Collectors.toList());
+    public List<Film> getTopFilms(Integer count) {
+        return filmDbStorage.getFilmTop(count);
     }
 }

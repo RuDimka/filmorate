@@ -7,17 +7,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FilmStorage {
+
     Film saveFilm(FilmDto filmDto);
 
     Film updateFilm(FilmDto filmDto);
 
     List<Film> getAllFilm();
 
-    Optional<Film> getFilmById(Long id);
+    void addLike(long filmId, long userId);
 
-    void addLike(Long userId);
-
-    void removeLike(Long userId);
-
-    int getLikeCount();
+    void removeLike(long filmId, long userId);
 }

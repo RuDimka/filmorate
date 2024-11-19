@@ -1,10 +1,13 @@
 package com.example.filmorate.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Genre {
-    private  Integer id;
+    private Integer id;
     private String name;
 }

@@ -1,9 +1,12 @@
 package com.example.filmorate.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class MpaRating {
     private Integer id;
     private String name;

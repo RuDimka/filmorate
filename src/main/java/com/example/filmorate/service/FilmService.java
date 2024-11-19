@@ -15,9 +15,9 @@ public interface FilmService {
 
     List<FilmDto> getAllFilms(FilmDto filmDto);
 
-    void addLike(Long id, Long userId);
+    void addLike(long id, long userId);
 
-    void removeLike(Long id, Long userId);
+    void removeLike(long id, long userId);
 
-    List<Film> getTopFilms(Optional<Integer> count);
+    List<Film> getTopFilms(Integer count);
 }
