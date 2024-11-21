@@ -1,11 +1,9 @@
 package com.example.filmorate.storage;
 
 import com.example.filmorate.dto.UserDto;
-import com.example.filmorate.entity.FriendsStatus;
 import com.example.filmorate.entity.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserStorage {
 

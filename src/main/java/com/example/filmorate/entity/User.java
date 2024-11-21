@@ -18,5 +18,4 @@ public class User {
     private String email;
     private LocalDate birthday;
     private Set<Long> friends = new HashSet<>();
-    private FriendsStatus status;
 }

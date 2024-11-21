@@ -1,10 +1,7 @@
 package com.example.filmorate.service.impl;
 
-import com.example.filmorate.entity.FriendsStatus;
 import com.example.filmorate.entity.User;
 import com.example.filmorate.dto.UserDto;
-import com.example.filmorate.exceptions.FriendNotFoundException;
-import com.example.filmorate.exceptions.UserNotFoundException;
 import com.example.filmorate.mapper.UserMapper;
 import com.example.filmorate.service.UserService;
 import com.example.filmorate.storage.impl.UserDbStorage;
