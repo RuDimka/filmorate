@@ -56,4 +56,9 @@ public class FilmController {
         log.info("Получен запрос на список популярных фильмов");
         return filmService.getTopFilms(count);
     }
+
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Long id) {
+        return filmService.getFilmById(id);
+    }
 }

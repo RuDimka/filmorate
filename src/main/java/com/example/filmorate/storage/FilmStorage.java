@@ -26,5 +26,4 @@ public interface FilmStorage {
 
     Film findById(Long id);
 
-    Set<Genre> getGenresByFilm(Film film);
 }

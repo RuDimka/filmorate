@@ -62,8 +62,8 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public Set<Genre> getGenresByFilm(Film film) {
-        return filmDbStorage.getGenresByFilm(film);
+    public Film getFilmById(Long id) {
+        return filmDbStorage.findById(id);
     }
 
     @Override

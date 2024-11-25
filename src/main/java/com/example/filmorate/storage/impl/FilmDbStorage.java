@@ -167,16 +167,9 @@ public class FilmDbStorage implements FilmStorage {
     public Film findById(Long id) {
         if (isFilmExist(id)) {
             String sql = "SELECT * FROM films WHERE id = ?";
-            List<Film> films = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Film.class), id);
-            return films.get(0);
+            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Film.class), id);
         } else {
             throw new FilmNotFoundException("Фидьм с таким id не найден");
         }
-    }
-
-    @Override
-    public Set<Genre> getGenresByFilm(Film film) {
-        String sql = "SELECT g.id, g.name FROM genres g JOIN film_genres fg ON g.id = fg.film_id WHERE fg.film_id = ?";
-        return new HashSet<>(jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Genre.class), film.getId()));
     }
 }

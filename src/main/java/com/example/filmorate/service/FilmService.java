@@ -24,5 +24,5 @@ public interface FilmService {
 
     void addLike(Long id, Long userId);
 
-    Set<Genre> getGenresByFilm(Film film);
+    Film getFilmById(Long id);
 }
