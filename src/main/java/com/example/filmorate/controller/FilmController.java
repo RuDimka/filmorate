@@ -1,14 +1,15 @@
 package com.example.filmorate.controller;
 
-import com.example.filmorate.entity.Film;
 import com.example.filmorate.dto.FilmDto;
+import com.example.filmorate.entity.Film;
+import com.example.filmorate.exceptions.MpaRatingNotFoundException;
 import com.example.filmorate.service.FilmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,21 +20,21 @@ public class FilmController {
     private final FilmService filmService;
 
     @PostMapping
-    public Film addFilm(@RequestBody FilmDto filmDto) {
+    public Film addFilm(@RequestBody FilmDto filmDto) throws SQLException, MpaRatingNotFoundException {
         log.info("Получен запрос на добавление фильма");
         return filmService.addNewFilm(filmDto);
     }
 
     @PutMapping()
-    public Film updateFilmById(@RequestBody FilmDto filmDto) {
+    public Film updateFilmById(@RequestBody FilmDto filmDto) throws SQLException, MpaRatingNotFoundException {
         log.info("Получен запрос на редактирование фильма {} ", filmDto.getName());
         return filmService.updateFilmById(filmDto);
     }
 
     @GetMapping
-    public List<FilmDto> getAllFilms(FilmDto filmDto) {
+    public List<Film> getAllFilms() throws MpaRatingNotFoundException {
         log.info("Получен запрос на список фильмов");
-        return filmService.getAllFilms(filmDto);
+        return filmService.getAllFilms();
     }
 
     @PutMapping("{id}/like/{userId}")
@@ -51,7 +52,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getTopFilms(@RequestParam int count) {
+    public List<Film> getTopFilms(@RequestParam(defaultValue = "10") int count) {
         log.info("Получен запрос на список популярных фильмов");
         return filmService.getTopFilms(count);
     }

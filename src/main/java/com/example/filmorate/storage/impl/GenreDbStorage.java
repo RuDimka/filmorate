@@ -20,15 +20,15 @@ public class GenreDbStorage implements GenreStorage {
     public Genre getGenreById(int genreId) {
         String sql = "SELECT * FROM genres WHERE id = ?";
         List<Genre> genres = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Genre.class), genreId);
-        if (!genres.isEmpty()) {
-            return genres.get(0);
+        if (genres.isEmpty()) {
+            throw new GenreNotFoundException("Жанр с id: " + genreId + " не найден");
         }
-        throw new GenreNotFoundException("Жанр не найден");
+        return genres.get(0);
     }
 
     @Override
     public List<Genre> getFilmGenres(long filmId) {
-        String sql = "SELECT * FROM genres WHERE id IN (SELECT id FROM film_genres WHERE film_id = ?)";
+        String sql = "SELECT * FROM genres WHERE id IN (SELECT id FROM film_genres WHERE film_id = ? ORDER BY id)";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Genre.class), filmId);
     }
 

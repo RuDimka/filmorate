@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -18,7 +19,7 @@ public class MpaController {
     private final MpaService mpaService;
 
     @GetMapping("/{id}")
-    public MpaRating getRatingById(@PathVariable Integer id) {
+    public MpaRating getRatingById(@PathVariable Integer id) throws SQLException {
         return mpaService.getRatingById(id);
     }
 

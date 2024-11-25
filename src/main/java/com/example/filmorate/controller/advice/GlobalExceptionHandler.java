@@ -15,72 +15,83 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(ValidationException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
-        log.info("Ошибка валидации");
-        return errorResponse;
+        log.warn("Ошибка валидации");
+        return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlerUserNotFoundException(UserNotFoundException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
-        log.info("Ошибка, пользователь не существует");
-        return errorResponse;
+        log.warn("Ошибка, пользователь не существует");
+        return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(FilmNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlerFilmNotFoundException(FilmNotFoundException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
-        log.info("Ошибка, фильм не существует");
-        return errorResponse;
+        log.warn("Ошибка, фильм не существует");
+        return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(FriendNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlerFriendNotFoundException(FriendNotFoundException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
-        log.info("Ошибка, друг не существует");
-        return errorResponse;
+        log.warn("Ошибка, друг не существует");
+        return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(UserNotLikedFilmException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlerUserNotLikedFilmException(UserNotLikedFilmException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
-        log.info("Ошибка, лайк не добавлен");
-        return errorResponse;
+        log.warn("Ошибка, лайк не добавлен");
+        return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(UserAlreadyLikedFilmException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handlerUserAlreadyLikedFilmException(UserAlreadyLikedFilmException ex) {
-        log.info("Ошибка, лайк уже добавлен");
-        return ex.getMessage();
+    public ErrorResponse handlerUserAlreadyLikedFilmException(UserAlreadyLikedFilmException ex) {
+        log.warn("Ошибка, лайк уже добавлен");
+        return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(FriendAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public String handlerFriendAlreadyExistsException(FriendAlreadyExistsException ex) {
-        log.info("Ошибка, пользователь уже добавлен в друзья");
-        return ex.getMessage();
+    public ErrorResponse handlerFriendAlreadyExistsException(FriendAlreadyExistsException ex) {
+        log.warn("Ошибка, пользователь уже добавлен в друзья");
+        return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(UserRemoveException.class)
     @ResponseStatus(HttpStatus.OK)
-    public String handlerUserRemoveException(UserRemoveException ex) {
-        return ex.getMessage();
+    public ErrorResponse handlerUserRemoveException(UserRemoveException ex) {
+        log.warn("Такой пользователь не найден");
+        return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(GenreNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handlerGenreNotFoundException(GenreNotFoundException ex){
-        return ex.getMessage();
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerGenreNotFoundException(GenreNotFoundException ex) {
+        log.warn("Ошибка, жанр не найден");
+        return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(MpaRatingNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerMpaRatingNotFoundException(MpaRatingNotFoundException ex) {
+        log.warn("Ошибка, рейтинг не существует");
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(MpaIdNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handlerMpaRatingNotFoundException(MpaRatingNotFoundException ex) {
-        return ex.getMessage();
+    public ErrorResponse handlerMpaIdNotFoundException(MpaIdNotFoundException ex) {
+        log.warn("Ошибка, рейтинг c таким id нет в базе данных");
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(GenreIdNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handlerGenreIdNotFoundException(GenreIdNotFoundException ex) {
+        return new ErrorResponse(ex.getMessage());
     }
 }
