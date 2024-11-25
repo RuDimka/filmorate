@@ -21,7 +21,9 @@ public class MpaDbStorage implements MpaStorage {
     @Override
     public MpaRating getRatingMpaById(int ratingId) {
         String sql = "SELECT * FROM ratings WHERE id = ?";
-        List<MpaRating> ratingList = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(MpaRating.class), ratingId);
+        List<MpaRating> ratingList = jdbcTemplate.query(sql,
+                (rs, rowNum) -> new MpaRating(rs.getInt("id"),
+                        rs.getString("rating_name")), ratingId);
         if (!ratingList.isEmpty()) {
             return ratingList.get(0);
         }
@@ -32,6 +34,8 @@ public class MpaDbStorage implements MpaStorage {
     @Override
     public List<MpaRating> getAll() {
         String sql = "SELECT * FROM ratings ORDER BY id";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(MpaRating.class));
+        return jdbcTemplate.query(sql,
+                (rs, rowNum) -> new MpaRating(rs.getInt("id"),
+                        rs.getString("rating_name")));
     }
 }

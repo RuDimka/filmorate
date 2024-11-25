@@ -23,7 +23,7 @@ R — лицам до 17 лет просматривать фильм можно
 NC-17 — лицам до 18 лет просмотр запрещён.
  */
 
-INSERT INTO ratings (id, name)
+INSERT INTO ratings (id, rating_name)
 VALUES (1, 'G'),
        (2, 'PG'),
        (3, 'PG-13'),

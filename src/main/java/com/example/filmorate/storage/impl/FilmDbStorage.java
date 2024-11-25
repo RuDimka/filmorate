@@ -3,6 +3,7 @@ package com.example.filmorate.storage.impl;
 import com.example.filmorate.dto.FilmDto;
 import com.example.filmorate.entity.Film;
 import com.example.filmorate.entity.Genre;
+import com.example.filmorate.entity.MpaRating;
 import com.example.filmorate.exceptions.FilmNotFoundException;
 import com.example.filmorate.exceptions.GenreNotFoundException;
 import com.example.filmorate.exceptions.MpaRatingNotFoundException;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 @Repository
@@ -30,6 +33,22 @@ public class FilmDbStorage implements FilmStorage {
     private final UserDbStorage userDbStorage;
     private final GenreDbStorage genreDbStorage;
     private final MpaDbStorage mpaDbStorage;
+
+    private Film makeFilm(ResultSet rs, int rowNum) throws SQLException {
+        Film film = new Film();
+        film.setId(rs.getLong("id"));
+        film.setName(rs.getString("name"));
+        film.setDescription(rs.getString("description"));
+        film.setReleaseDate(rs.getDate("release_date").toLocalDate());
+        film.setDuration(rs.getInt("duration"));
+        long rating = rs.getLong("rating_id");
+        String ratingStr = rs.getString("rating_name");
+        MpaRating mpaRating = new MpaRating();
+        mpaRating.setId(Math.toIntExact(rating));
+        mpaRating.setName(ratingStr);
+        film.setMpa(mpaRating);
+        return film;
+    }
 
     @Override
     public Film saveFilm(FilmDto filmDto) {
@@ -166,10 +185,12 @@ public class FilmDbStorage implements FilmStorage {
 
     public Film findById(Long id) {
         if (isFilmExist(id)) {
-            String sql = "SELECT * FROM films WHERE id = ?";
-            return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Film.class), id);
+            String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, rating_id, r.rating_name "+
+                    " FROM films f JOIN ratings r ON f.rating_id = r.id " +
+                    " WHERE f.id = ?";
+            return jdbcTemplate.queryForObject(sql, this::makeFilm, id);
         } else {
-            throw new FilmNotFoundException("Фидьм с таким id не найден");
+            throw new FilmNotFoundException("Фильм с таким id не найден");
         }
     }
 }
