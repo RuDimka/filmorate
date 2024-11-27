@@ -1,11 +1,10 @@
 package com.example.filmorate.service;
 
-import com.example.filmorate.entity.User;
 import com.example.filmorate.dto.UserDto;
+import com.example.filmorate.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface UserService {

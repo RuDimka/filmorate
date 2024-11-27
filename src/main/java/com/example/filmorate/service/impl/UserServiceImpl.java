@@ -1,7 +1,7 @@
 package com.example.filmorate.service.impl;
 
-import com.example.filmorate.entity.User;
 import com.example.filmorate.dto.UserDto;
+import com.example.filmorate.entity.User;
 import com.example.filmorate.mapper.UserMapper;
 import com.example.filmorate.service.UserService;
 import com.example.filmorate.storage.impl.UserDbStorage;
@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service

@@ -5,6 +5,7 @@ import com.example.filmorate.entity.MpaRating;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -15,5 +16,5 @@ public class FilmDto {
     private LocalDate releaseDate;
     private int duration;
     private MpaRating mpa;
-    private List<Genre> genres;
+    private List<Genre> genres = new ArrayList<>();
 }

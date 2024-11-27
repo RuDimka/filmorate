@@ -2,12 +2,10 @@ package com.example.filmorate.service;
 
 import com.example.filmorate.dto.FilmDto;
 import com.example.filmorate.entity.Film;
-import com.example.filmorate.entity.Genre;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public interface FilmService {

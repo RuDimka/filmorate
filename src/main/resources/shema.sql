@@ -15,7 +15,8 @@ CREATE TABLE films
     release_date DATE                                                 NOT NULL,
     duration     INTEGER                                              NOT NULL,
     rate         INTEGER                                              NOT NULL,
-    rating    INTEGER REFERENCES ratings (id)
+    rating       INTEGER REFERENCES ratings (id),
+    likes_count  INTEGER
 );
 
 CREATE TABLE likes

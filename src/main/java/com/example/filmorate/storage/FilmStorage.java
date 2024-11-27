@@ -6,7 +6,6 @@ import com.example.filmorate.entity.Genre;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 public interface FilmStorage {
 
@@ -16,14 +15,13 @@ public interface FilmStorage {
 
     List<Film> getAllFilm();
 
-    void saveLike(Film film);
+    void addLike(Long filmId, Long userId);
 
-    void loadLikes(Film film);
+    List<Genre> findByGenresByFilmId(Long filmId);
 
     void removeLikes(long filmId, long userId);
 
     List<Film> getFilmTop(int count);
 
     Film findById(Long id);
-
 }

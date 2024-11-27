@@ -15,7 +15,6 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
@@ -47,6 +46,7 @@ public class FilmDbStorage implements FilmStorage {
         mpaRating.setId(Math.toIntExact(rating));
         mpaRating.setName(ratingStr);
         film.setMpa(mpaRating);
+        film.setLikesCount((rs.getInt("likes_count")));
         return film;
     }
 
@@ -116,8 +116,8 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film updateFilm(FilmDto filmDto) {
         if (isFilmExist(filmDto.getId())) {
-            jdbcTemplate.update("UPDATE films SET name = ?, description = ?, release_date = ?, duration = ?",
-                    filmDto.getName(), filmDto.getDescription(), filmDto.getReleaseDate(), filmDto.getDuration());
+            jdbcTemplate.update("UPDATE films SET name = ?, description = ?, release_date = ?, duration = ? WHERE id = ?",
+                    filmDto.getName(), filmDto.getDescription(), filmDto.getReleaseDate(), filmDto.getDuration(), filmDto.getId());
         } else {
             throw new FilmNotFoundException("Фильм не найден");
         }
@@ -135,28 +135,16 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public void saveLike(Film film) {
-        jdbcTemplate.update("DELETE FROM likes WHERE film_id = ?", film.getId());
-
-        String sql = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
-        Set<Long> likes = film.getLikes();
-        for (var like : likes) {
-            jdbcTemplate.update(sql, film.getId(), like);
-        }
-    }
-
-    @Override
-    public void loadLikes(Film film) {
-        String sql = "SELECT user_id FROM likes WHERE film_id = ?";
-        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql, film.getId());
-        while (sqlRowSet.next()) {
-            film.addLike(sqlRowSet.getLong("user_id"));
+    public void addLike(Long filmId, Long userId) {
+        if (checkLike(filmId, userId) == 0) {
+            String sql = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
+            jdbcTemplate.update(sql, filmId, userId);
         }
     }
 
     @Override
     public void removeLikes(long filmId, long userId) {
-        if (checkLike(filmId, userId) == 0) {
+        if (checkLike(filmId, userId) > 0) {
             String sql = "DELETE FROM  likes WHERE film_id = ? AND user_id = ? ";
             jdbcTemplate.update(sql, userId, filmId);
         }
@@ -168,8 +156,12 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     public List<Film> getFilmTop(int count) {
-        String sqlQuery = "SELECT * FROM films WHERE rating_id = ?";
-        return jdbcTemplate.query(sqlQuery, new BeanPropertyRowMapper<>(Film.class), count);
+        String sqlQuery = "SELECT f.id, f.name, f.description, f.release_date, f.duration, f.rating_id, r.rating_name," +
+                "(SELECT COUNT(*) FROM likes l WHERE l.film_id = f.id) AS likes_count" +
+                " FROM films f " +
+                "JOIN ratings r ON f.rating_id = r.id" +
+                " ORDER BY likes_count DESC, f.id LIMIT ?";
+        return jdbcTemplate.query(sqlQuery, this::makeFilm, count);
     }
 
     public int checkLike(final long filmId, final long userId) {
@@ -185,12 +177,27 @@ public class FilmDbStorage implements FilmStorage {
 
     public Film findById(Long id) {
         if (isFilmExist(id)) {
-            String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, rating_id, r.rating_name "+
+            String sql = "SELECT f.id, f.name, f.description, f.release_date, f.duration, rating_id, r.rating_name, likes_count " +
                     " FROM films f JOIN ratings r ON f.rating_id = r.id " +
                     " WHERE f.id = ?";
-            return jdbcTemplate.queryForObject(sql, this::makeFilm, id);
+            Film film = jdbcTemplate.queryForObject(sql, this::makeFilm, id);
+            List<Genre> genres = findByGenresByFilmId(id);
+            assert film != null;
+            film.setGenres(genres);
+            return film;
         } else {
             throw new FilmNotFoundException("Фильм с таким id не найден");
         }
+    }
+
+    public List<Genre> findByGenresByFilmId(Long filmId) {
+        String sql = "SELECT g.id, g.name FROM genres g JOIN film_genres fg ON g.id = fg.genre_id WHERE fg.film_id = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Genre genre = new Genre();
+            genre.setId(rs.getInt("id"));
+            genre.setName(rs.getString("name"));
+            return genre;
+        }, filmId);
+
     }
 }

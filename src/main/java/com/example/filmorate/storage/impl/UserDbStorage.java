@@ -41,19 +41,10 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User findUserById(Long id) {
-        List<User> userList = jdbcTemplate.query("SELECT * FROM users WHERE ID = ?", new BeanPropertyRowMapper<>(User.class));
-        if (userList.isEmpty()) {
-            throw new UserNotFoundException("Пользователь с id " + " не найден");
-        }
-        return userList.get(0);
-    }
-
-    @Override
     public User updateUser(UserDto userDto) {
         if (isUserExist(userDto.getId())) {
-            jdbcTemplate.update("UPDATE users SET login = ?, name = ?, email = ?, birthday = ?",
-                    userDto.getLogin(), userDto.getName(), userDto.getEmail(), userDto.getBirthday());
+            jdbcTemplate.update("UPDATE users SET login = ?, name = ?, email = ?, birthday = ?  WHERE id = ?",
+                    userDto.getLogin(), userDto.getName(), userDto.getEmail(), userDto.getBirthday(), userDto.getId());
             return userMapperImpl.userDtoToUser(userDto);
         } else {
             throw new UserNotFoundException("Обновление не возможно, пользователь не найден");

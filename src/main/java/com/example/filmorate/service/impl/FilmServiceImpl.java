@@ -2,7 +2,6 @@ package com.example.filmorate.service.impl;
 
 import com.example.filmorate.dto.FilmDto;
 import com.example.filmorate.entity.Film;
-import com.example.filmorate.entity.Genre;
 import com.example.filmorate.exceptions.MpaRatingNotFoundException;
 import com.example.filmorate.service.FilmService;
 import com.example.filmorate.storage.impl.FilmDbStorage;
@@ -11,11 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -25,14 +20,14 @@ public class FilmServiceImpl implements FilmService {
     private final ValidatorFilm validationFilm;
 
     @Override
-    public Film addNewFilm(FilmDto filmDto) throws SQLException {
+    public Film addNewFilm(FilmDto filmDto) {
         log.info("Добавлен новый фильм {}", filmDto.getName());
         validationFilm.validationFilm(filmDto);
         return filmDbStorage.saveFilm(filmDto);
     }
 
     @Override
-    public Film updateFilmById(FilmDto filmDto) throws SQLException {
+    public Film updateFilmById(FilmDto filmDto) {
         log.info("Отредактирована информация по фильму {}", filmDto.getName());
         return filmDbStorage.updateFilm(filmDto);
     }
@@ -45,19 +40,12 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> getTopFilms(int count) {
-        List<Film> films = filmDbStorage.getFilmTop(count);
-        films.sort(Comparator.comparing(Film::getLikesCount).reversed());
-        if(count > films.size()) {
-            count = films.size();
-        }
-        return new ArrayList<>(films.subList(0, count));
+        return filmDbStorage.getFilmTop(count);
     }
 
     @Override
     public void addLike(Long id, Long userId) {
-        Film film = filmDbStorage.findById(id);
-        film.addLike(userId);
-        filmDbStorage.saveLike(film);
+        filmDbStorage.addLike(id, userId);
         log.info("Пользователь {} поставил лайк у фильма {}", userId, id);
     }
 
@@ -68,9 +56,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void removeLike(long id, long userId) {
-        Film film = filmDbStorage.findById(id);
-        film.removeLike(userId);
-        filmDbStorage.saveLike(film);
+        filmDbStorage.removeLikes(id, userId);
         log.info("Пользователь {} убрал лайк у фильма {}", userId, id);
     }
 }

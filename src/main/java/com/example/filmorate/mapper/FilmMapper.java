@@ -1,7 +1,7 @@
 package com.example.filmorate.mapper;
 
-import com.example.filmorate.entity.Film;
 import com.example.filmorate.dto.FilmDto;
+import com.example.filmorate.entity.Film;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
@@ -9,6 +9,4 @@ import org.mapstruct.MappingConstants;
 public interface FilmMapper {
 
     Film filmDtoToEntity(FilmDto filmDto);
-
-    FilmDto filmToFIlmDto(Film film);
 }

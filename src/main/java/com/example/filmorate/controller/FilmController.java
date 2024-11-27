@@ -52,7 +52,8 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getTopFilms(@RequestParam(defaultValue = "10") int count) {
+    public List<Film> getTopFilms(
+            @RequestParam int count) {
         log.info("Получен запрос на список популярных фильмов");
         return filmService.getTopFilms(count);
     }

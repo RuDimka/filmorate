@@ -9,8 +9,6 @@ public interface UserStorage {
 
     User saveUser(UserDto userDto);
 
-    User findUserById(Long id);
-
     User updateUser(UserDto userDto);
 
     List<User> getAllUsers();
