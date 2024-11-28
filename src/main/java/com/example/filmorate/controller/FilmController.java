@@ -60,6 +60,7 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable Long id) {
+        log.info("Запрос на получение фильма по ID");
         return filmService.getFilmById(id);
     }
 }

@@ -85,13 +85,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MpaIdNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlerMpaIdNotFoundException(MpaIdNotFoundException ex) {
-        log.warn("Ошибка, рейтинг c таким id нет в базе данных");
+        log.warn("Ошибка, рейтинга c таким id нет в базе данных");
         return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(GenreIdNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlerGenreIdNotFoundException(GenreIdNotFoundException ex) {
+        log.warn("Ошибка, жанра c таким id нет в базе данных");
         return new ErrorResponse(ex.getMessage());
     }
 }

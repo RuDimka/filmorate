@@ -17,4 +17,16 @@ public class FilmDto {
     private int duration;
     private MpaRating mpa;
     private List<Genre> genres = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "FilmDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", releaseDate=" + releaseDate +
+                ", duration=" + duration +
+                ", mpa=" + mpa +
+                '}';
+    }
 }

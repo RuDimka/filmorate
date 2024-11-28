@@ -40,6 +40,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> getTopFilms(int count) {
+        log.info("Список популярных фильмов");
         return filmDbStorage.getFilmTop(count);
     }
 
@@ -51,6 +52,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Film getFilmById(Long id) {
+        log.info("Фильм с ID {}", id);
         return filmDbStorage.findById(id);
     }
 
