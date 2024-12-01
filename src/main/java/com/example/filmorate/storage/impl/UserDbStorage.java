@@ -1,5 +1,6 @@
 package com.example.filmorate.storage.impl;
 
+import com.example.filmorate.constant.SqlRequestConstant;
 import com.example.filmorate.dto.UserDto;
 import com.example.filmorate.entity.User;
 import com.example.filmorate.exceptions.UserNotFoundException;
@@ -26,10 +27,9 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User saveUser(UserDto userDto) {
-        String sqlQuery = "INSERT INTO users (login, name, email, birthday) VALUES(?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"id"});
+            PreparedStatement stmt = connection.prepareStatement(SqlRequestConstant.SQL_QUERY_ADD_NEW_USER, new String[]{"id"});
             stmt.setString(1, userDto.getLogin());
             stmt.setString(2, userDto.getName());
             stmt.setString(3, userDto.getEmail());
@@ -43,7 +43,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User updateUser(UserDto userDto) {
         if (isUserExist(userDto.getId())) {
-            jdbcTemplate.update("UPDATE users SET login = ?, name = ?, email = ?, birthday = ?  WHERE id = ?",
+            jdbcTemplate.update(SqlRequestConstant.SQL_QUERY_UPDATE_USER,
                     userDto.getLogin(), userDto.getName(), userDto.getEmail(), userDto.getBirthday(), userDto.getId());
             return userMapperImpl.userDtoToUser(userDto);
         } else {
@@ -53,7 +53,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getAllUsers() {
-        return jdbcTemplate.query("SELECT * FROM users ORDER BY id LIMIT 1", new BeanPropertyRowMapper<>(User.class));
+        return jdbcTemplate.query(SqlRequestConstant.SQL_QUERY_GET_ALL_USERS, new BeanPropertyRowMapper<>(User.class));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class UserDbStorage implements UserStorage {
         if (!isUserExist(userId) || !isUserExist(friendId)) {
             throw new UserNotFoundException("Пользователь с таким id не найден");
         }
-        jdbcTemplate.update("INSERT INTO friends (user_id, friend_id, status) VALUES (?, ?, ?)",
+        jdbcTemplate.update(SqlRequestConstant.SQL_QUERY_ADD_FRIEND,
                 userId, friendId, "CONFIRMED");
     }
 
@@ -70,7 +70,7 @@ public class UserDbStorage implements UserStorage {
         if (!isUserExist(userId) || !isUserExist(friendId)) {
             throw new UserNotFoundException("Пользователь с таким id не найден");
         }
-        boolean isDelete = jdbcTemplate.update("DELETE FROM friends WHERE user_id = ? AND friend_id = ?",
+        boolean isDelete = jdbcTemplate.update(SqlRequestConstant.SQL_QUERY_DELETE_FRIEND,
                 userId, friendId) < 1;
         if (isDelete) {
             throw new UserRemoveException("Пользователь в друзях не найден");
@@ -82,10 +82,7 @@ public class UserDbStorage implements UserStorage {
         if (!isUserExist(userId)) {
             throw new UserNotFoundException("Пользователь с таким id не найден");
         }
-
-        String sqlQuery = "SELECT * FROM users WHERE users.id IN " +
-                "(SELECT friends.friend_id FROM friends WHERE friends.user_id = ? AND status = 'CONFIRMED');";
-        return jdbcTemplate.query(sqlQuery, new BeanPropertyRowMapper<>(User.class), userId);
+        return jdbcTemplate.query(SqlRequestConstant.SQL_QUERY_GET_LIST_FRIENDS, new BeanPropertyRowMapper<>(User.class), userId);
     }
 
     @Override
@@ -93,15 +90,12 @@ public class UserDbStorage implements UserStorage {
         if (!isUserExist(userId) || !isUserExist(otherId)) {
             throw new UserNotFoundException("Пользователь с таким id не найден");
         }
-        String sqlQuery = "SELECT * FROM users WHERE id IN " +
-                "(SELECT DISTINCT (friends.friend_id) FROM friends WHERE user_id = ? AND status = 'CONFIRMED'" +
-                " AND friend_id IN (SELECT friend_id FROM friends WHERE user_id = ? AND status = 'CONFIRMED'))";
-        return jdbcTemplate.query(sqlQuery, new BeanPropertyRowMapper<>(User.class), userId, otherId);
+        return jdbcTemplate.query(SqlRequestConstant.SQL_QUERY_GET_CONTAINS_FRIENDS, new BeanPropertyRowMapper<>(User.class), userId, otherId);
     }
 
     @Override
     public boolean isUserExist(long id) {
-        int countUser = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users WHERE ID = ?", Integer.class, id);
+        int countUser = jdbcTemplate.queryForObject(SqlRequestConstant.SQL_QUERY_IS_EXIST_USER, Integer.class, id);
         return countUser > 0;
     }
 }

@@ -4,11 +4,12 @@ import com.example.filmorate.entity.Genre;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface GenreService {
 
-    Genre getGenreById(Integer genreId);
+    Optional<Genre> getGenreById(Integer genreId);
 
     List<Genre> getAllGenres();
 }

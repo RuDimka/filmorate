@@ -6,6 +6,7 @@ import com.example.filmorate.entity.Genre;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 public interface FilmStorage {
 
@@ -21,7 +22,7 @@ public interface FilmStorage {
 
     void removeLikes(long filmId, long userId);
 
-    List<Film> getFilmTop(int count);
+    Optional<List<Film>> getFilmTop(int count);
 
-    Film findById(Long id);
+    Optional<Film> findById(Long id);
 }

@@ -2,6 +2,7 @@ package com.example.filmorate.controller;
 
 import com.example.filmorate.dto.FilmDto;
 import com.example.filmorate.entity.Film;
+import com.example.filmorate.exceptions.GenreIdNotFoundException;
 import com.example.filmorate.exceptions.MpaRatingNotFoundException;
 import com.example.filmorate.service.FilmService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class FilmController {
     private final FilmService filmService;
 
     @PostMapping
-    public Film addFilm(@RequestBody FilmDto filmDto) throws SQLException, MpaRatingNotFoundException {
+    public Film addFilm(@RequestBody FilmDto filmDto) throws SQLException, MpaRatingNotFoundException, GenreIdNotFoundException {
         log.info("Получен запрос на добавление фильма");
         return filmService.addNewFilm(filmDto);
     }
@@ -52,14 +54,14 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getTopFilms(
+    public Optional<List<Film>> getTopFilms(
             @RequestParam int count) {
         log.info("Получен запрос на список популярных фильмов");
         return filmService.getTopFilms(count);
     }
 
     @GetMapping("/{id}")
-    public Film getFilmById(@PathVariable Long id) {
+    public Optional<Film> getFilmById(@PathVariable Long id) {
         log.info("Запрос на получение фильма по ID");
         return filmService.getFilmById(id);
     }

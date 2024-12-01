@@ -5,11 +5,12 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface MpaService {
 
-    MpaRating getRatingById(Integer ratingMpaId) throws SQLException;
+    Optional<MpaRating> getRatingById(Integer ratingMpaId) throws SQLException;
 
     List<MpaRating> getAllRating(MpaRating mpaRating);
 }

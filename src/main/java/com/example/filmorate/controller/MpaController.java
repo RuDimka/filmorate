@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/mpa")
@@ -21,7 +22,7 @@ public class MpaController {
     private final MpaService mpaService;
 
     @GetMapping("/{id}")
-    public MpaRating getRatingById(@PathVariable Integer id) throws SQLException {
+    public Optional<MpaRating> getRatingById(@PathVariable Integer id) throws SQLException {
         log.info("Запрос на получение рейтинга по ID");
         return mpaService.getRatingById(id);
     }

@@ -69,28 +69,28 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(GenreNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlerGenreNotFoundException(GenreNotFoundException ex) {
         log.warn("Ошибка, жанр не найден");
         return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(MpaRatingNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handlerMpaRatingNotFoundException(MpaRatingNotFoundException ex) {
         log.warn("Ошибка, рейтинг не существует");
         return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(MpaIdNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handlerMpaIdNotFoundException(MpaIdNotFoundException ex) {
         log.warn("Ошибка, рейтинга c таким id нет в базе данных");
         return new ErrorResponse(ex.getMessage());
     }
 
     @ExceptionHandler(GenreIdNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handlerGenreIdNotFoundException(GenreIdNotFoundException ex) {
         log.warn("Ошибка, жанра c таким id нет в базе данных");
         return new ErrorResponse(ex.getMessage());

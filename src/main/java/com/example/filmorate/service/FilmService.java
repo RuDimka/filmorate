@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface FilmService {
@@ -18,9 +19,9 @@ public interface FilmService {
 
     void removeLike(long id, long userId);
 
-    List<Film> getTopFilms(int count);
+    Optional<List<Film>> getTopFilms(int count);
 
     void addLike(Long id, Long userId);
 
-    Film getFilmById(Long id);
+    Optional<Film> getFilmById(Long id);
 }
